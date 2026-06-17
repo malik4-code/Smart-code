@@ -1,0 +1,1 @@
+- [Influence CRM architecture](influence-crm.md) — Supabase as auth+db, react-i18next bilingual, RTL via html dir, supabase-schema.sql must be run to bootstrap tables
