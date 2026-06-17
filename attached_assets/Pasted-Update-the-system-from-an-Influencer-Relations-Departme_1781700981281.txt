@@ -1,0 +1,275 @@
+Update the system from an Influencer Relations Department CRM to a full Marketing Company Management System.
+
+First update: Client Management Module + Company Roles & Permissions.
+
+====================================
+CLIENT CREATION FORM
+====================
+
+When adding a new client, create the following fields:
+
+1. Campaign Responsible Employee
+
+* Optional field
+* Dropdown list from company employees
+* The user can select one employee responsible for the campaign/client
+
+2. Client Contact Number
+
+* Phone number field
+* Validate Saudi/mobile/international numbers
+
+3. Brand Name
+
+* Text field
+
+4. Brand Link
+
+* URL field
+* Validate website/social media link
+
+5. Legal Company Name
+
+* Company name as registered in the commercial registration
+
+6. Commercial Registration Number
+
+* Text/number field
+
+7. National Address Information
+   Add the following fields:
+
+* Country
+* City
+* District
+* Street Name
+* Postal Code
+* Building Number
+
+8. VAT Status
+   Question:
+   Is the client subject to VAT?
+   Options:
+
+* Yes
+* No
+
+If Yes, show additional fields:
+
+* VAT Registered Name
+* VAT Number
+
+9. Attachments
+   Allow file upload for:
+
+* Commercial Registration Certificate
+* VAT Certificate
+* National Address Certificate
+* Contract
+* Other Attachments
+
+Allowed file types:
+
+* PDF
+* JPG
+* PNG
+* DOCX
+
+10. Barcode / QR Code Scanning
+    Add the ability to scan barcode or QR code from uploaded documents or camera to auto-fill client data when possible.
+
+The system should support:
+
+* Scanning commercial registration QR/barcode
+* Scanning VAT certificate QR/barcode
+* Scanning national address QR/barcode
+* Extracting available data and filling the form automatically
+
+====================================
+CLIENT PROFILE PAGE
+===================
+
+Each client profile should display:
+
+* Brand name
+* Legal company name
+* Contact number
+* Brand link
+* Commercial registration number
+* VAT status
+* VAT name and VAT number if available
+* National address details
+* Responsible employee
+* Related campaigns
+* Contracts
+* Attachments
+* Notes
+* Activity log
+
+====================================
+COMPANY STRUCTURE UPDATE
+========================
+
+Change the system concept from department-based to full marketing company structure.
+
+Add roles:
+
+1. Company Owner / Company Responsible Person
+
+* Full access to the whole system
+* Can view all departments, clients, campaigns, reports, finance, users, and permissions
+
+2. CEO / Executive Director
+
+* Full management access
+* Can approve major campaigns
+* Can view all company performance reports
+* Can manage department managers
+
+3. Department Manager
+
+* Manages one or more departments
+* Can view clients and campaigns under their department
+* Can assign campaign leaders
+* Can approve department work
+
+4. Campaign Leader
+
+* Responsible for one campaign or multiple campaigns
+* Can assign tasks to team members under them
+* Can follow campaign progress
+* Can submit work for approval
+
+5. Team Member / Employee
+
+* Can only see assigned tasks, assigned clients, and assigned campaigns
+* Can update task status
+* Can upload files and notes
+
+6. Finance Manager
+
+* Can view client billing data
+* Can view VAT information
+* Can access invoices, contracts, payment status, and financial reports
+
+7. Viewer / Client Portal
+
+* Can only view shared information
+* Cannot see internal cost, profit margin, or employee notes
+
+====================================
+PERMISSIONS LOGIC
+=================
+
+Apply role-based permissions using Supabase Auth and Row Level Security.
+
+Rules:
+
+* Company Owner can see everything.
+* CEO can see all company operations.
+* Department Manager can see only their department data.
+* Campaign Leader can see only campaigns assigned to them.
+* Team Member can see only assigned tasks and campaigns.
+* Finance Manager can see financial and client billing information.
+* Client Portal users can only see shared reports/proposals.
+
+====================================
+EMPLOYEE HIERARCHY
+==================
+
+Add employee hierarchy:
+
+* Company Owner
+
+  * CEO
+
+    * Department Manager
+
+      * Campaign Leader
+
+        * Team Members
+
+Each user should have:
+
+* Full name
+* Email
+* Mobile
+* Role
+* Department
+* Direct manager
+* Status: Active / Inactive
+
+====================================
+CLIENT ASSIGNMENT
+=================
+
+When creating or editing a client:
+
+* Allow assigning responsible employee
+* Allow assigning department
+* Allow assigning account manager
+* Allow assigning campaign leader later when a campaign is created
+
+====================================
+ACTIVITY LOG
+============
+
+Track all client-related actions:
+
+* Client created
+* Client edited
+* Attachment uploaded
+* Attachment deleted
+* VAT status changed
+* Responsible employee changed
+* Contract uploaded
+* National address updated
+* User who made the change
+* Date and time of action
+
+====================================
+IMPORTANT UI REQUIREMENTS
+=========================
+
+* Support Arabic and English
+
+* Arabic layout should be RTL
+
+* English layout should be LTR
+
+* Make client form organized into sections:
+
+  1. Basic Information
+  2. Legal Information
+  3. National Address
+  4. VAT Information
+  5. Attachments
+  6. Responsible Employee
+
+* Make required and optional fields clear.
+
+* Add save draft option.
+
+* Add validation before saving.
+
+* Add search and filter for clients.
+
+====================================
+DATABASE REQUIREMENTS
+=====================
+
+Create or update tables for:
+
+* clients
+* client_addresses
+* client_tax_information
+* client_attachments
+* employees
+* roles
+* permissions
+* departments
+* client_activity_logs
+* campaigns
+* campaign_assignments
+
+Make sure the structure is scalable for a full marketing company, not only influencer relations.

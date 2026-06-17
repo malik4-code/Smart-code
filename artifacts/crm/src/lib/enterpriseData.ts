@@ -386,3 +386,258 @@ export const mockTeamMembers: MockTeamMember[] = [
   { id: "u6", name: "ريم الدوسري", role: "account_manager", email: "r.aldosari@crm.sa", tasks_completed: 29, tasks_pending: 7, campaigns_active: 2, productivity_score: 78, avatar_initials: "ر د" },
   { id: "u7", name: "فيصل العتيبي", role: "finance_user", email: "f.alotaibi@crm.sa", tasks_completed: 33, tasks_pending: 2, campaigns_active: 1, productivity_score: 91, avatar_initials: "ف ع" },
 ];
+
+export type ClientAttachmentType = "commercial_registration" | "vat_certificate" | "national_address_certificate" | "contract" | "other";
+
+export interface ClientAttachment {
+  id: string;
+  name: string;
+  attachment_type: ClientAttachmentType;
+  file_type: "pdf" | "jpg" | "png" | "docx";
+  file_size: string;
+  uploaded_by: string;
+  uploaded_at: string;
+}
+
+export interface ClientActivityEntry {
+  id: string;
+  action_en: string;
+  action_ar: string;
+  user: string;
+  timestamp: string;
+  details: string | null;
+}
+
+export interface MockEnterpriseClient {
+  id: string;
+  name: string;
+  brand_name: string;
+  brand_link: string;
+  phone: string;
+  email: string;
+  industry: string;
+  status: "active" | "inactive";
+  responsible_employee_id: string | null;
+  responsible_employee: string | null;
+  legal_company_name: string;
+  commercial_registration_number: string;
+  country: string;
+  city: string;
+  district: string;
+  street_name: string;
+  postal_code: string;
+  building_number: string;
+  vat_subject: boolean;
+  vat_registered_name: string;
+  vat_number: string;
+  notes: string;
+  attachments: ClientAttachment[];
+  activity_log: ClientActivityEntry[];
+  created_at: string;
+  updated_at: string;
+}
+
+export const mockEnterpriseClients: MockEnterpriseClient[] = [
+  {
+    id: "ec1",
+    name: "فيصل المحمد",
+    brand_name: "STC",
+    brand_link: "https://www.stc.com.sa",
+    phone: "+966501234567",
+    email: "faisal@stc.com.sa",
+    industry: "اتصالات",
+    status: "active",
+    responsible_employee_id: "u4",
+    responsible_employee: "سارة القحطاني",
+    legal_company_name: "شركة الاتصالات السعودية",
+    commercial_registration_number: "1010035097",
+    country: "المملكة العربية السعودية",
+    city: "الرياض",
+    district: "العليا",
+    street_name: "طريق الملك فهد",
+    postal_code: "11481",
+    building_number: "B-210",
+    vat_subject: true,
+    vat_registered_name: "شركة الاتصالات السعودية",
+    vat_number: "300096490100003",
+    notes: "عميل استراتيجي — حملات موسمية طوال العام.",
+    attachments: [
+      { id: "at1", name: "STC_سجل_تجاري.pdf", attachment_type: "commercial_registration", file_type: "pdf", file_size: "1.2 MB", uploaded_by: "سارة القحطاني", uploaded_at: subHours(72) },
+      { id: "at2", name: "STC_شهادة_ضريبة.pdf", attachment_type: "vat_certificate", file_type: "pdf", file_size: "820 KB", uploaded_by: "فيصل العتيبي", uploaded_at: subHours(48) },
+    ],
+    activity_log: [
+      { id: "al1", action_en: "Client created", action_ar: "تم إنشاء العميل", user: "سارة القحطاني", timestamp: subHours(500), details: null },
+      { id: "al2", action_en: "Attachment uploaded: VAT Certificate", action_ar: "رفع مرفق: شهادة الضريبة", user: "فيصل العتيبي", timestamp: subHours(48), details: "STC_شهادة_ضريبة.pdf" },
+      { id: "al3", action_en: "Responsible employee changed", action_ar: "تغيير الموظف المسؤول", user: "محمد العمري", timestamp: subHours(24), details: "خالد السلمان ← سارة القحطاني" },
+    ],
+    created_at: subHours(500),
+    updated_at: subHours(24),
+  },
+  {
+    id: "ec2",
+    name: "نورة علي",
+    brand_name: "لوريال",
+    brand_link: "https://www.loreal.com/ar-sa",
+    phone: "+966559876543",
+    email: "noura@loreal-ksa.com",
+    industry: "مستحضرات تجميل",
+    status: "active",
+    responsible_employee_id: "u5",
+    responsible_employee: "خالد السلمان",
+    legal_company_name: "شركة لوريال المملكة العربية السعودية",
+    commercial_registration_number: "1010181153",
+    country: "المملكة العربية السعودية",
+    city: "الرياض",
+    district: "الملز",
+    street_name: "شارع الأمير عبدالعزيز",
+    postal_code: "11452",
+    building_number: "A-45",
+    vat_subject: true,
+    vat_registered_name: "لوريال السعودية",
+    vat_number: "300105674000003",
+    notes: "تفضل التواصل بالإنجليزية في المراسلات الرسمية.",
+    attachments: [
+      { id: "at3", name: "لوريال_سجل_تجاري.pdf", attachment_type: "commercial_registration", file_type: "pdf", file_size: "980 KB", uploaded_by: "خالد السلمان", uploaded_at: subHours(300) },
+      { id: "at4", name: "لوريال_عقد_2025.pdf", attachment_type: "contract", file_type: "pdf", file_size: "2.1 MB", uploaded_by: "محمد العمري", uploaded_at: subHours(100) },
+    ],
+    activity_log: [
+      { id: "al4", action_en: "Client created", action_ar: "تم إنشاء العميل", user: "خالد السلمان", timestamp: subHours(400), details: null },
+      { id: "al5", action_en: "Contract uploaded", action_ar: "رفع العقد", user: "محمد العمري", timestamp: subHours(100), details: "لوريال_عقد_2025.pdf" },
+    ],
+    created_at: subHours(400),
+    updated_at: subHours(100),
+  },
+  {
+    id: "ec3",
+    name: "عبدالرحمن الجهني",
+    brand_name: "نايفوري",
+    brand_link: "https://www.naifouri.com",
+    phone: "+966534567890",
+    email: "ar@naifouri.com",
+    industry: "مجوهرات وساعات",
+    status: "active",
+    responsible_employee_id: "u6",
+    responsible_employee: "ريم الدوسري",
+    legal_company_name: "مؤسسة نايفوري للمجوهرات",
+    commercial_registration_number: "4030128474",
+    country: "المملكة العربية السعودية",
+    city: "جدة",
+    district: "الزهراء",
+    street_name: "شارع التحلية",
+    postal_code: "23423",
+    building_number: "C-12",
+    vat_subject: true,
+    vat_registered_name: "مؤسسة نايفوري للمجوهرات",
+    vat_number: "300789012300003",
+    notes: "يفضل الاجتماعات الوجاهية في جدة.",
+    attachments: [
+      { id: "at5", name: "نايفوري_العنوان_الوطني.pdf", attachment_type: "national_address_certificate", file_type: "pdf", file_size: "650 KB", uploaded_by: "ريم الدوسري", uploaded_at: subHours(200) },
+    ],
+    activity_log: [
+      { id: "al6", action_en: "Client created", action_ar: "تم إنشاء العميل", user: "ريم الدوسري", timestamp: subHours(350), details: null },
+      { id: "al7", action_en: "National address updated", action_ar: "تحديث العنوان الوطني", user: "ريم الدوسري", timestamp: subHours(200), details: "تحديث بيانات العنوان الوطني" },
+    ],
+    created_at: subHours(350),
+    updated_at: subHours(200),
+  },
+  {
+    id: "ec4",
+    name: "مشاري النجدي",
+    brand_name: "نون أكاديمية",
+    brand_link: "https://www.noon.com/saudi-ar",
+    phone: "+966571234567",
+    email: "marketing@noon-edu.com",
+    industry: "تعليم",
+    status: "active",
+    responsible_employee_id: "u2",
+    responsible_employee: "أحمد الغامدي",
+    legal_company_name: "شركة أكاديمية نون للتعليم الإلكتروني",
+    commercial_registration_number: "1010436754",
+    country: "المملكة العربية السعودية",
+    city: "الرياض",
+    district: "حي الورود",
+    street_name: "شارع العروبة",
+    postal_code: "12254",
+    building_number: "D-7",
+    vat_subject: false,
+    vat_registered_name: "",
+    vat_number: "",
+    notes: "متخصصون في حملات المحتوى التعليمي للأطفال.",
+    attachments: [
+      { id: "at6", name: "نون_سجل_تجاري.pdf", attachment_type: "commercial_registration", file_type: "pdf", file_size: "1.05 MB", uploaded_by: "أحمد الغامدي", uploaded_at: subHours(180) },
+    ],
+    activity_log: [
+      { id: "al8", action_en: "Client created", action_ar: "تم إنشاء العميل", user: "أحمد الغامدي", timestamp: subHours(300), details: null },
+      { id: "al9", action_en: "VAT status changed to Exempt", action_ar: "تغيير حالة ضريبة القيمة المضافة: معفى", user: "فيصل العتيبي", timestamp: subHours(250), details: "معفى من الضريبة" },
+    ],
+    created_at: subHours(300),
+    updated_at: subHours(180),
+  },
+  {
+    id: "ec5",
+    name: "طارق الحربي",
+    brand_name: "كودو",
+    brand_link: "https://www.herfy.com",
+    phone: "+966598765432",
+    email: "t.alharbi@kudu.com.sa",
+    industry: "مطاعم وضيافة",
+    status: "active",
+    responsible_employee_id: "u4",
+    responsible_employee: "سارة القحطاني",
+    legal_company_name: "شركة كودو للمطاعم",
+    commercial_registration_number: "1010250805",
+    country: "المملكة العربية السعودية",
+    city: "الرياض",
+    district: "الصحافة",
+    street_name: "طريق أنس بن مالك",
+    postal_code: "13315",
+    building_number: "E-33",
+    vat_subject: true,
+    vat_registered_name: "شركة كودو للمطاعم",
+    vat_number: "300234567800003",
+    notes: "حملات موسمية: رمضان، صيف، الموسم الوطني.",
+    attachments: [
+      { id: "at7", name: "كودو_سجل_تجاري.pdf", attachment_type: "commercial_registration", file_type: "pdf", file_size: "1.3 MB", uploaded_by: "سارة القحطاني", uploaded_at: subHours(400) },
+      { id: "at8", name: "كودو_عقد_2025.pdf", attachment_type: "contract", file_type: "pdf", file_size: "1.8 MB", uploaded_by: "خالد السلمان", uploaded_at: subHours(90) },
+    ],
+    activity_log: [
+      { id: "al10", action_en: "Client created", action_ar: "تم إنشاء العميل", user: "سارة القحطاني", timestamp: subHours(500), details: null },
+      { id: "al11", action_en: "Contract uploaded", action_ar: "رفع العقد", user: "خالد السلمان", timestamp: subHours(90), details: "كودو_عقد_2025.pdf" },
+    ],
+    created_at: subHours(500),
+    updated_at: subHours(90),
+  },
+  {
+    id: "ec6",
+    name: "هند العسيري",
+    brand_name: "سدايا",
+    brand_link: "https://sdaia.gov.sa",
+    phone: "+966512345678",
+    email: "h.alasiri@sdaia.gov.sa",
+    industry: "تقنية وذكاء اصطناعي",
+    status: "active",
+    responsible_employee_id: "u3",
+    responsible_employee: "نورة الزهراني",
+    legal_company_name: "الهيئة السعودية للبيانات والذكاء الاصطناعي",
+    commercial_registration_number: "1010553412",
+    country: "المملكة العربية السعودية",
+    city: "الرياض",
+    district: "المركز المالي",
+    street_name: "طريق الملك عبدالعزيز",
+    postal_code: "12211",
+    building_number: "F-1",
+    vat_subject: false,
+    vat_registered_name: "",
+    vat_number: "",
+    notes: "جهة حكومية — تتطلب موافقات متعددة المستويات.",
+    attachments: [
+      { id: "at9", name: "سدايا_خطاب_تفويض.pdf", attachment_type: "contract", file_type: "pdf", file_size: "750 KB", uploaded_by: "نورة الزهراني", uploaded_at: subHours(120) },
+    ],
+    activity_log: [
+      { id: "al12", action_en: "Client created", action_ar: "تم إنشاء العميل", user: "نورة الزهراني", timestamp: subHours(450), details: null },
+      { id: "al13", action_en: "Responsible employee assigned", action_ar: "تعيين الموظف المسؤول", user: "محمد العمري", timestamp: subHours(440), details: "نورة الزهراني" },
+    ],
+    created_at: subHours(450),
+    updated_at: subHours(120),
+  },
+];

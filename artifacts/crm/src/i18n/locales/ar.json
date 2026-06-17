@@ -1,5 +1,5 @@
 {
-  "app": { "name": "إدارة المؤثرين", "tagline": "نظام علاقات المؤثرين المتكامل" },
+  "app": { "name": "نظام إدارة التسويق", "tagline": "إدارة شركة التسويق المتكاملة" },
   "nav": {
     "main": "الرئيسية", "operations": "العمليات", "management": "الإدارة", "admin": "الإدارة العليا",
     "dashboard": "لوحة التحكم", "campaigns": "الحملات", "clients": "العملاء", "influencers": "المؤثرون",
@@ -10,7 +10,7 @@
   "auth": {
     "signIn": "تسجيل الدخول", "signOut": "تسجيل الخروج", "email": "البريد الإلكتروني", "password": "كلمة المرور",
     "loginButton": "دخول", "loginError": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-    "loginTitle": "مرحباً بعودتك", "loginSubtitle": "تسجيل الدخول إلى نظام إدارة المؤثرين",
+    "loginTitle": "مرحباً بعودتك", "loginSubtitle": "تسجيل الدخول إلى نظام إدارة التسويق",
     "emailPlaceholder": "أدخل بريدك الإلكتروني", "passwordPlaceholder": "أدخل كلمة المرور",
     "forgotPassword": "نسيت كلمة المرور؟", "noAccount": "ليس لديك حساب؟", "requiredField": "هذا الحقل مطلوب"
   },
@@ -104,13 +104,39 @@
   "clients": {
     "title": "العملاء", "subtitle": "إدارة علاقات عملائك",
     "addClient": "إضافة عميل", "editClient": "تعديل العميل", "deleteClient": "حذف العميل",
-    "clientName": "اسم العميل", "industry": "القطاع", "email": "البريد الإلكتروني", "phone": "رقم الهاتف",
+    "viewProfile": "عرض الملف", "profile": "ملف العميل",
+    "clientName": "اسم جهة التواصل", "brandName": "اسم العلامة التجارية", "brandLink": "رابط العلامة التجارية",
+    "legalCompanyName": "الاسم القانوني للشركة", "commercialRegistrationNumber": "رقم السجل التجاري",
+    "industry": "القطاع", "email": "البريد الإلكتروني", "phone": "رقم التواصل",
     "address": "العنوان", "website": "الموقع الإلكتروني", "notes": "ملاحظات", "status": "الحالة",
     "active": "نشط", "inactive": "غير نشط", "search": "البحث في العملاء...", "noClients": "لا يوجد عملاء",
     "confirmDelete": "هل أنت متأكد من حذف هذا العميل؟",
     "addSuccess": "تمت إضافة العميل بنجاح", "editSuccess": "تم تحديث العميل بنجاح",
     "deleteSuccess": "تم حذف العميل بنجاح", "contactPerson": "جهة الاتصال",
-    "contractStart": "بداية العقد", "contractEnd": "انتهاء العقد", "accountManager": "مدير الحساب"
+    "contractStart": "بداية العقد", "contractEnd": "انتهاء العقد", "accountManager": "مدير الحساب",
+    "responsibleEmployee": "الموظف المسؤول عن الحملة", "selectEmployee": "اختر موظفاً...",
+    "basicInfo": "المعلومات الأساسية", "legalInfo": "المعلومات القانونية",
+    "nationalAddress": "العنوان الوطني", "vatInfo": "معلومات ضريبة القيمة المضافة",
+    "attachmentsSection": "المرفقات", "employeeSection": "الموظف المسؤول",
+    "country": "الدولة", "city": "المدينة", "district": "الحي",
+    "streetName": "اسم الشارع", "postalCode": "الرمز البريدي", "buildingNumber": "رقم المبنى",
+    "vatSubject": "هل العميل خاضع لضريبة القيمة المضافة؟", "vatYes": "نعم — خاضع للضريبة",
+    "vatNo": "لا — معفى من الضريبة", "vatRegisteredName": "الاسم المسجل في الضريبة", "vatNumber": "الرقم الضريبي",
+    "addAttachment": "إضافة مرفق", "attachmentName": "اسم الملف",
+    "attachmentType": "نوع المستند", "uploadSimulated": "تم إرفاق الملف (الوضع التجريبي)",
+    "scanQR": "مسح QR / باركود", "scanning": "جاري المسح...", "scanSuccess": "تم استخراج البيانات من المستند",
+    "attachmentTypes": {
+      "commercial_registration": "السجل التجاري",
+      "vat_certificate": "شهادة ضريبة القيمة المضافة",
+      "national_address_certificate": "شهادة العنوان الوطني",
+      "contract": "العقد",
+      "other": "أخرى"
+    },
+    "relatedCampaigns": "الحملات المرتبطة", "clientActivity": "سجل النشاط",
+    "saveDraft": "حفظ مسودة", "noAttachments": "لا توجد مرفقات",
+    "noActivity": "لا يوجد نشاط بعد", "uploadedBy": "رُفع بواسطة",
+    "crNumber": "رقم السجل التجاري", "vatStatus": "حالة الضريبة", "vatSubjectShort": "مسجل ضريبياً",
+    "vatExempt": "معفى من الضريبة", "legalName": "الاسم القانوني", "brandLabel": "العلامة التجارية"
   },
   "influencers": {
     "title": "المؤثرون", "subtitle": "إدارة قاعدة بيانات المؤثرين",
@@ -186,10 +212,11 @@
   },
   "language": { "en": "English", "ar": "العربية", "switchTo": "التبديل إلى" },
   "roles": {
-    "admin": "مدير عام", "manager": "مدير", "employee": "موظف",
-    "dept_manager": "مدير القسم", "team_leader": "قائد الفريق",
-    "influencer_specialist": "أخصائي مؤثرين", "account_manager": "مدير حسابات",
-    "finance_user": "مستخدم مالي", "client_user": "بوابة العميل"
+    "admin": "مالك الشركة", "manager": "المدير التنفيذي",
+    "dept_manager": "مدير القسم", "team_leader": "قائد الحملة",
+    "employee": "عضو الفريق", "influencer_specialist": "أخصائي مؤثرين",
+    "account_manager": "مدير حسابات", "finance_user": "مدير مالي",
+    "client_user": "بوابة العميل"
   },
   "errors": {
     "fetchFailed": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",

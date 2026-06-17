@@ -8,6 +8,7 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
+import ClientDetail from "./pages/ClientDetail";
 import Influencers from "./pages/Influencers";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
@@ -74,6 +75,7 @@ function Router() {
       <Route path="/campaigns" component={() => <ProtectedRoute component={Campaigns} />} />
       <Route path="/campaigns/:id" component={() => <ProtectedRoute component={CampaignDetail} />} />
       <Route path="/clients" component={() => <ProtectedRoute component={Clients} />} />
+      <Route path="/clients/:id" component={() => <ProtectedRoute component={ClientDetail} />} />
       <Route path="/influencers" component={() => <ProtectedRoute component={Influencers} />} />
       <Route path="/projects" component={() => <ProtectedRoute component={Projects} />} />
       <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />

@@ -1,5 +1,5 @@
 {
-  "app": { "name": "Influence CRM", "tagline": "Enterprise Influencer Relations" },
+  "app": { "name": "Marketing CRM", "tagline": "Full-Service Marketing Company Management" },
   "nav": {
     "main": "Main", "operations": "Operations", "management": "Management", "admin": "Administration",
     "dashboard": "Dashboard", "campaigns": "Campaigns", "clients": "Clients", "influencers": "Influencers",
@@ -10,7 +10,7 @@
   "auth": {
     "signIn": "Sign In", "signOut": "Sign Out", "email": "Email", "password": "Password",
     "loginButton": "Sign In", "loginError": "Invalid email or password. Please try again.",
-    "loginTitle": "Welcome Back", "loginSubtitle": "Sign in to your Influence CRM account",
+    "loginTitle": "Welcome Back", "loginSubtitle": "Sign in to your Marketing CRM account",
     "emailPlaceholder": "Enter your email", "passwordPlaceholder": "Enter your password",
     "forgotPassword": "Forgot password?", "noAccount": "Don't have an account?", "requiredField": "This field is required"
   },
@@ -104,13 +104,39 @@
   "clients": {
     "title": "Clients", "subtitle": "Manage your client relationships",
     "addClient": "Add Client", "editClient": "Edit Client", "deleteClient": "Delete Client",
-    "clientName": "Client Name", "industry": "Industry", "email": "Email", "phone": "Phone",
+    "viewProfile": "View Profile", "profile": "Client Profile",
+    "clientName": "Contact Name", "brandName": "Brand Name", "brandLink": "Brand Website / Link",
+    "legalCompanyName": "Legal Company Name", "commercialRegistrationNumber": "Commercial Registration Number",
+    "industry": "Industry", "email": "Email", "phone": "Contact Number",
     "address": "Address", "website": "Website", "notes": "Notes", "status": "Status",
     "active": "Active", "inactive": "Inactive", "search": "Search clients...", "noClients": "No clients found",
     "confirmDelete": "Are you sure you want to delete this client?",
     "addSuccess": "Client added successfully", "editSuccess": "Client updated successfully",
     "deleteSuccess": "Client deleted successfully", "contactPerson": "Contact Person",
-    "contractStart": "Contract Start", "contractEnd": "Contract End", "accountManager": "Account Manager"
+    "contractStart": "Contract Start", "contractEnd": "Contract End", "accountManager": "Account Manager",
+    "responsibleEmployee": "Responsible Employee", "selectEmployee": "Select employee...",
+    "basicInfo": "Basic Information", "legalInfo": "Legal Information",
+    "nationalAddress": "National Address", "vatInfo": "VAT Information",
+    "attachmentsSection": "Attachments", "employeeSection": "Responsible Employee",
+    "country": "Country", "city": "City", "district": "District",
+    "streetName": "Street Name", "postalCode": "Postal Code", "buildingNumber": "Building Number",
+    "vatSubject": "Is the client subject to VAT?", "vatYes": "Yes — Subject to VAT",
+    "vatNo": "No — Exempt from VAT", "vatRegisteredName": "VAT Registered Name", "vatNumber": "VAT Number",
+    "addAttachment": "Add Attachment", "attachmentName": "File Name",
+    "attachmentType": "Document Type", "uploadSimulated": "File attached (demo mode)",
+    "scanQR": "Scan QR / Barcode", "scanning": "Scanning...", "scanSuccess": "Data extracted from document",
+    "attachmentTypes": {
+      "commercial_registration": "Commercial Registration",
+      "vat_certificate": "VAT Certificate",
+      "national_address_certificate": "National Address Certificate",
+      "contract": "Contract",
+      "other": "Other"
+    },
+    "relatedCampaigns": "Related Campaigns", "clientActivity": "Activity Log",
+    "saveDraft": "Save Draft", "noAttachments": "No attachments uploaded",
+    "noActivity": "No activity yet", "uploadedBy": "Uploaded by",
+    "crNumber": "C.R. Number", "vatStatus": "VAT Status", "vatSubjectShort": "VAT Registered",
+    "vatExempt": "VAT Exempt", "legalName": "Legal Name", "brandLabel": "Brand"
   },
   "influencers": {
     "title": "Influencers", "subtitle": "Manage your influencer database",
@@ -187,10 +213,11 @@
   },
   "language": { "en": "English", "ar": "العربية", "switchTo": "Switch to" },
   "roles": {
-    "admin": "Admin", "manager": "Manager", "employee": "Employee",
-    "dept_manager": "Department Manager", "team_leader": "Team Leader",
-    "influencer_specialist": "Influencer Specialist", "account_manager": "Account Manager",
-    "finance_user": "Finance User", "client_user": "Client Portal"
+    "admin": "Company Owner", "manager": "CEO / Executive Director",
+    "dept_manager": "Department Manager", "team_leader": "Campaign Leader",
+    "employee": "Team Member", "influencer_specialist": "Influencer Specialist",
+    "account_manager": "Account Manager", "finance_user": "Finance Manager",
+    "client_user": "Client Portal"
   },
   "errors": {
     "fetchFailed": "Failed to load data. Please try again.",
