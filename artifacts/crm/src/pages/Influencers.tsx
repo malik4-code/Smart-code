@@ -6,16 +6,79 @@ import { cn } from "@/lib/utils";
 import type { Influencer } from "../lib/supabase";
 import { mockInfluencers } from "../lib/mockData";
 
-const platformColors: Record<string, string> = {
-  instagram: "bg-pink-100 text-pink-700",
-  youtube: "bg-red-100 text-red-700",
-  tiktok: "bg-slate-100 text-slate-700",
-  twitter: "bg-sky-100 text-sky-700",
-  snapchat: "bg-yellow-100 text-yellow-700",
-  linkedin: "bg-blue-100 text-blue-700",
-  facebook: "bg-indigo-100 text-indigo-700",
-  other: "bg-gray-100 text-gray-700",
-};
+function PlatformIcon({ platform, size = 18 }: { platform: string; size?: number }) {
+  const s = size;
+  const icons: Record<string, React.ReactNode> = {
+    instagram: (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#F9CE34"/>
+            <stop offset="33%" stopColor="#EE2A7B"/>
+            <stop offset="100%" stopColor="#6228D7"/>
+          </linearGradient>
+        </defs>
+        <rect width="24" height="24" rx="6" fill="url(#ig)"/>
+        <circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="1.8" fill="none"/>
+        <circle cx="17.5" cy="6.5" r="1.2" fill="white"/>
+      </svg>
+    ),
+    tiktok: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#010101"/>
+        <path fill="#EE1D52" d="M16.8 9.3a5.7 5.7 0 0 1-2.3-.5v5.6a3.8 3.8 0 1 1-3.8-3.8c.2 0 .4 0 .6.1V12a2 2 0 1 0 2 2V6h2c.1.7.4 1.3.8 1.8.6.7 1.5 1.1 2.5 1.2v1.8a5.6 5.6 0 0 1-1.8-.5z"/>
+        <path fill="#69C9D0" d="M15 8.8a5.7 5.7 0 0 0 2.3.5V7.5c-.5-.1-1-.4-1.5-.8A3.6 3.6 0 0 1 15 4.7h-2v13.3a2 2 0 0 1-2 1.7 2 2 0 0 1-2-2 2 2 0 0 1 2-2c.2 0 .4 0 .6.1v-1.9a3.8 3.8 0 0 0-.6-.1 3.8 3.8 0 0 0-3.8 3.8 3.8 3.8 0 0 0 3.8 3.8 3.8 3.8 0 0 0 3.8-3.8V9.3A5.6 5.6 0 0 0 17 9.8V8c-.4 0-.8-.1-1.1-.2l-.9.2z"/>
+      </svg>
+    ),
+    snapchat: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#FFFC00"/>
+        <path fill="#000" d="M12 4c-1.9 0-3.5 1.3-3.5 3.7v.6c-.3-.1-.7-.2-1-.1-.6.1-1 .5-.9 1 0 .3.3.5.7.7-.2.4-.6.7-1.3.9-.2.1-.3.3-.2.5.2.6 1 .9 2.4 1.2 0 .1.1.2.1.3.1.3.5.5 1.1.5h.1c.3.3.8.5 1.5.5s1.2-.2 1.5-.5h.1c.6 0 1-.2 1.1-.5 0-.1.1-.2.1-.3 1.4-.3 2.2-.6 2.4-1.2.1-.2 0-.4-.2-.5-.7-.2-1.1-.5-1.3-.9.4-.2.7-.4.7-.7.1-.5-.3-.9-.9-1-.3-.1-.7 0-1 .1v-.6C15.5 5.3 13.9 4 12 4z"/>
+      </svg>
+    ),
+    x: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#000"/>
+        <path fill="white" d="M13.6 10.9 17.8 6h-1l-3.6 4.2L10.2 6H6.4l4.4 6.4L6.4 18h1l3.8-4.4 3 4.4h3.8l-4.4-6.1zm-1.3 1.6-.4-.6-3.4-4.9H9.8l2.8 4 .4.6 3.6 5.1H14l-1.7-4.2z"/>
+      </svg>
+    ),
+    twitter: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#1D9BF0"/>
+        <path fill="white" d="M18.2 8.5c-.5.2-1 .3-1.5.4.5-.3.9-.8 1.1-1.4-.5.3-1 .5-1.6.6a2.6 2.6 0 0 0-4.4 2.4 7.3 7.3 0 0 1-5.3-2.7 2.6 2.6 0 0 0 .8 3.4c-.4 0-.8-.1-1.2-.3v.1A2.6 2.6 0 0 0 8.2 13c-.4.1-.8.1-1.2 0a2.6 2.6 0 0 0 2.4 1.8 5.2 5.2 0 0 1-3.9.9 7.3 7.3 0 0 0 11.3-6.1V9.3c.5-.4.9-.9 1.4-1.4l-.1.6z"/>
+      </svg>
+    ),
+    youtube: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#FF0000"/>
+        <path fill="white" d="M20 8.8a2.3 2.3 0 0 0-1.6-1.6C17 6.9 12 6.9 12 6.9s-5 0-6.4.3A2.3 2.3 0 0 0 4 8.8 24 24 0 0 0 4 12a24 24 0 0 0 .3 3.2 2.3 2.3 0 0 0 1.6 1.6c1.4.3 6.4.3 6.4.3s5 0 6.4-.3a2.3 2.3 0 0 0 1.6-1.6A24 24 0 0 0 20.3 12 24 24 0 0 0 20 8.8z"/>
+        <polygon fill="#FF0000" points="10.2,14.5 14.5,12 10.2,9.5"/>
+        <polygon fill="white" points="10.2,14.5 14.5,12 10.2,9.5"/>
+      </svg>
+    ),
+    facebook: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#1877F2"/>
+        <path fill="white" d="M16 12h-2.7v8h-3v-8H8V9.3h2.3V7.6c0-2.3 1.4-3.6 3.5-3.6.7 0 1.5.1 2.2.2v2.4h-1.2c-1.2 0-1.5.6-1.5 1.4v1.3H16L15.4 12z"/>
+      </svg>
+    ),
+    linkedin: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#0A66C2"/>
+        <path fill="white" d="M7 9.5h2.5V17H7V9.5zm1.25-4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11 9.5h2.4v1h.1c.3-.6 1.1-1.2 2.3-1.2 2.5 0 3 1.6 3 3.7V17h-2.5v-3.5c0-.8 0-1.8-1.1-1.8s-1.3.9-1.3 1.8V17H11V9.5z"/>
+      </svg>
+    ),
+    other: (
+      <svg width={s} height={s} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" rx="6" fill="#6B7280"/>
+        <circle cx="12" cy="12" r="3" fill="white"/>
+        <path stroke="white" strokeWidth="1.5" fill="none" d="M12 4a8 8 0 1 0 0 16A8 8 0 0 0 12 4z"/>
+        <path stroke="white" strokeWidth="1.5" fill="none" d="M12 4c-2 0-3.5 3.6-3.5 8s1.5 8 3.5 8 3.5-3.6 3.5-8-1.5-8-3.5-8z"/>
+      </svg>
+    ),
+  };
+  return <span title={platform} className="flex-shrink-0">{icons[platform] || icons["other"]}</span>;
+}
 
 const emptyForm = {
   name: "", platform: "instagram", category: "", city: "",
@@ -43,7 +106,7 @@ export default function Influencers() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const platforms = ["instagram", "youtube", "tiktok", "twitter", "snapchat", "linkedin", "facebook", "other"];
+  const platforms = ["instagram", "youtube", "tiktok", "x", "twitter", "snapchat", "linkedin", "facebook", "other"];
   const categories = ["lifestyle", "fashion", "food", "tech", "beauty", "fitness", "travel", "business", "education", "entertainment", "sports", "gaming", "other"];
 
   useEffect(() => { fetchInfluencers(); }, []);
@@ -133,7 +196,6 @@ export default function Influencers() {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative">
           <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -142,14 +204,22 @@ export default function Influencers() {
             className="h-10 ps-9 pe-4 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary w-64"
           />
         </div>
-        <select value={platformFilter} onChange={e => setPlatformFilter(e.target.value)}
-          className="h-10 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-          <option value="all">{t("common.all")}</option>
-          {platforms.map(p => <option key={p} value={p}>{t(`influencers.platforms.${p}`)}</option>)}
-        </select>
+        <div className="flex items-center gap-2">
+          <select value={platformFilter} onChange={e => setPlatformFilter(e.target.value)}
+            className="h-10 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+            <option value="all">{t("common.all")}</option>
+            {platforms.map(p => (
+              <option key={p} value={p}>{t(`influencers.platforms.${p}`)}</option>
+            ))}
+          </select>
+          {platformFilter !== "all" && (
+            <div className="flex items-center gap-1.5">
+              <PlatformIcon platform={platformFilter} size={20} />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Table */}
       <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -175,9 +245,10 @@ export default function Influencers() {
                 <tr key={inf.id} className="hover:bg-muted/30 transition-colors">
                   <td className="px-4 py-3.5 font-medium whitespace-nowrap">{inf.name}</td>
                   <td className="px-4 py-3.5">
-                    <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-medium", platformColors[inf.platform] || "bg-gray-100 text-gray-600")}>
-                      {t(`influencers.platforms.${inf.platform}`)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <PlatformIcon platform={inf.platform} size={22} />
+                      <span className="text-xs text-muted-foreground capitalize">{t(`influencers.platforms.${inf.platform}`)}</span>
+                    </div>
                   </td>
                   <td className="px-4 py-3.5 text-muted-foreground">
                     {inf.category ? t(`influencers.categories.${inf.category}`) : "—"}
@@ -204,7 +275,6 @@ export default function Influencers() {
         )}
       </div>
 
-      {/* Add/Edit Dialog */}
       {dialogOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/50" onClick={() => setDialogOpen(false)} />
@@ -220,9 +290,12 @@ export default function Influencers() {
               </FormField>
               <div className="grid grid-cols-2 gap-4">
                 <FormField label={t("influencers.platform")}>
-                  <select value={form.platform} onChange={e => setForm(f => ({ ...f, platform: e.target.value }))} className={inputCls}>
-                    {platforms.map(p => <option key={p} value={p}>{t(`influencers.platforms.${p}`)}</option>)}
-                  </select>
+                  <div className="flex items-center gap-2">
+                    <PlatformIcon platform={form.platform} size={20} />
+                    <select value={form.platform} onChange={e => setForm(f => ({ ...f, platform: e.target.value }))} className={cn(inputCls, "flex-1")}>
+                      {platforms.map(p => <option key={p} value={p}>{t(`influencers.platforms.${p}`)}</option>)}
+                    </select>
+                  </div>
                 </FormField>
                 <FormField label={t("influencers.category")}>
                   <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className={inputCls}>
@@ -267,7 +340,6 @@ export default function Influencers() {
         </div>
       )}
 
-      {/* Delete Confirm */}
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/50" onClick={() => setDeleteId(null)} />

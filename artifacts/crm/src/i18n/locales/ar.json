@@ -5,7 +5,7 @@
     "dashboard": "لوحة التحكم", "campaigns": "الحملات", "clients": "العملاء", "influencers": "المؤثرون",
     "projects": "المشاريع", "tasks": "المهام", "approvals": "الموافقات", "finance": "المالية",
     "documents": "المستندات", "reports": "التقارير", "activityLog": "سجل الأنشطة",
-    "calendar": "التقويم", "settings": "الإعدادات", "logout": "تسجيل الخروج"
+    "calendar": "التقويم", "settings": "الإعدادات", "usersRoles": "المستخدمون والأدوار", "logout": "تسجيل الخروج"
   },
   "auth": {
     "signIn": "تسجيل الدخول", "signOut": "تسجيل الخروج", "email": "البريد الإلكتروني", "password": "كلمة المرور",
@@ -52,6 +52,18 @@
       "shortlisted": "مختار", "client_approved": "معتمد من العميل",
       "client_rejected": "مرفوض من العميل", "contracted": "متعاقد",
       "content_done": "المحتوى جاهز", "published": "منشور"
+    },
+    "campaignType": "نوع الحملة",
+    "objective": "هدف الحملة",
+    "selectClient": "اختر العميل",
+    "responsibleEmployee": "الموظف المسؤول",
+    "platforms": "المنصات",
+    "influencerCategories": "تصنيفات المؤثرين المطلوبة",
+    "addSuccess": "تم إنشاء الحملة بنجاح",
+    "campaignTypes": {
+      "awareness": "الوعي بالعلامة التجارية", "engagement": "التفاعل",
+      "conversion": "التحويل", "branding": "الهوية والعلامة التجارية",
+      "launch": "إطلاق منتج", "seasonal": "حملة موسمية"
     }
   },
   "approvals": {
@@ -157,7 +169,11 @@
     "noContractDate": "لا توجد تواريخ عقد",
     "assignedTeam": "الفريق المعين",
     "scanHint": "مسح QR/باركود لملء البيانات القانونية تلقائياً",
-    "responsibleEmployeeHint": "الموظف المسؤول عن الحملة (منفصل عن مدير الحساب)"
+    "responsibleEmployeeHint": "الموظف المسؤول عن الحملة (منفصل عن مدير الحساب)",
+    "contractsTab": "العقود", "invoicesTab": "الفواتير", "notesTab": "الملاحظات",
+    "addNote": "إضافة ملاحظة", "noInvoices": "لا توجد فواتير لهذا العميل",
+    "noNotes": "لم تُضف أي ملاحظات بعد", "contractHistory": "سجل العقود",
+    "invoiceDocuments": "مستندات الفواتير"
   },
   "influencers": {
     "title": "المؤثرون", "subtitle": "إدارة قاعدة بيانات المؤثرين",
@@ -205,7 +221,15 @@
     "today": "اليوم", "prev": "السابق", "next": "التالي",
     "months": { "january": "يناير", "february": "فبراير", "march": "مارس", "april": "أبريل", "may": "مايو", "june": "يونيو", "july": "يوليو", "august": "أغسطس", "september": "سبتمبر", "october": "أكتوبر", "november": "نوفمبر", "december": "ديسمبر" },
     "days": { "sunday": "أحد", "monday": "إثنين", "tuesday": "ثلاثاء", "wednesday": "أربعاء", "thursday": "خميس", "friday": "جمعة", "saturday": "سبت" },
-    "noEvents": "لا توجد أحداث", "taskDue": "موعد مهمة", "projectDeadline": "موعد مشروع", "eventDetails": "تفاصيل الحدث"
+    "noEvents": "لا توجد أحداث هذا اليوم", "taskDue": "موعد مهمة", "projectDeadline": "موعد مشروع", "eventDetails": "تفاصيل الحدث",
+    "occasionTypes": {
+      "national": "يوم وطني", "religious": "مناسبة دينية",
+      "marketing": "موسم تسويقي", "holiday": "إجازة رسمية",
+      "campaign": "حملة", "contract": "تذكير عقد",
+      "task": "موعد مهمة", "project": "موعد مشروع"
+    },
+    "saudiOccasions": "المناسبات والمواسم السعودية",
+    "monthView": "شهري", "yearView": "سنوي", "addEvent": "إضافة حدث"
   },
   "reports": {
     "title": "التقارير", "subtitle": "التحليلات والإحصاءات",
@@ -247,5 +271,37 @@
     "notFound": "الصفحة غير موجودة",
     "unauthorized": "غير مصرح لك بالوصول إلى هذه الصفحة.",
     "noSupabaseConfig": "يعمل النظام في الوضع التجريبي."
+  },
+  "usersRoles": {
+    "title": "المستخدمون والأدوار",
+    "subtitle": "إدارة أعضاء الفريق والأدوار والصلاحيات",
+    "addUser": "إضافة مستخدم",
+    "totalUsers": "إجمالي المستخدمين",
+    "roleHierarchy": "التسلسل الوظيفي",
+    "viewAs": "عرض كـ",
+    "exitViewAs": "إنهاء العرض",
+    "permissions": "الصلاحيات",
+    "lastLogin": "آخر تسجيل دخول",
+    "department": "القسم",
+    "directManager": "المدير المباشر",
+    "permissionsFor": "صلاحيات",
+    "canView": "يمكنه رؤية",
+    "canDo": "يمكنه تنفيذ",
+    "cannotDo": "لا يمكنه تنفيذ",
+    "userStatus": "الحالة",
+    "productivity": "الإنتاجية",
+    "tasksCompleted": "المهام المنجزة",
+    "activeCampaigns": "الحملات النشطة",
+    "viewAsInfo": "عرض النظام كهذا المستخدم لاختبار صلاحياته",
+    "adminOnly": "صلاحية المدير فقط",
+    "teamMembers": "أعضاء الفريق"
+  },
+  "viewAs": {
+    "banner": "أنت تشاهد النظام كـ:",
+    "exit": "إنهاء وضع العرض",
+    "title": "عرض كمستخدم",
+    "description": "عرض النظام كأي عضو في الفريق لاختبار صلاحياته. يتم تسجيل هذا الإجراء.",
+    "activity": "المدير شاهد النظام كـ",
+    "selectUser": "اختر المستخدم"
   }
 }

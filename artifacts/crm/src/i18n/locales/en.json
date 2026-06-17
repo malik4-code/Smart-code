@@ -5,7 +5,7 @@
     "dashboard": "Dashboard", "campaigns": "Campaigns", "clients": "Clients", "influencers": "Influencers",
     "projects": "Projects", "tasks": "Tasks", "approvals": "Approvals", "finance": "Finance",
     "documents": "Documents", "reports": "Reports", "activityLog": "Activity Log",
-    "calendar": "Calendar", "settings": "Settings", "logout": "Logout"
+    "calendar": "Calendar", "settings": "Settings", "usersRoles": "Users & Roles", "logout": "Logout"
   },
   "auth": {
     "signIn": "Sign In", "signOut": "Sign Out", "email": "Email", "password": "Password",
@@ -52,6 +52,18 @@
       "shortlisted": "Shortlisted", "client_approved": "Client Approved",
       "client_rejected": "Client Rejected", "contracted": "Contracted",
       "content_done": "Content Done", "published": "Published"
+    },
+    "campaignType": "Campaign Type",
+    "objective": "Campaign Objective",
+    "selectClient": "Select Client",
+    "responsibleEmployee": "Responsible Employee",
+    "platforms": "Platforms",
+    "influencerCategories": "Influencer Categories",
+    "addSuccess": "Campaign created successfully",
+    "campaignTypes": {
+      "awareness": "Brand Awareness", "engagement": "Engagement",
+      "conversion": "Conversion", "branding": "Branding & Identity",
+      "launch": "Product Launch", "seasonal": "Seasonal Campaign"
     }
   },
   "approvals": {
@@ -157,7 +169,11 @@
     "noContractDate": "No contract dates set",
     "assignedTeam": "Assigned Team",
     "scanHint": "Scan QR/Barcode to auto-fill legal data",
-    "responsibleEmployeeHint": "Campaign responsible (separate from Account Manager)"
+    "responsibleEmployeeHint": "Campaign responsible (separate from Account Manager)",
+    "contractsTab": "Contracts", "invoicesTab": "Invoices", "notesTab": "Notes",
+    "addNote": "Add Note", "noInvoices": "No invoices found for this client",
+    "noNotes": "No notes added yet", "contractHistory": "Contract History",
+    "invoiceDocuments": "Invoice Documents"
   },
   "influencers": {
     "title": "Influencers", "subtitle": "Manage your influencer database",
@@ -206,7 +222,15 @@
     "today": "Today", "prev": "Previous", "next": "Next",
     "months": { "january": "January", "february": "February", "march": "March", "april": "April", "may": "May", "june": "June", "july": "July", "august": "August", "september": "September", "october": "October", "november": "November", "december": "December" },
     "days": { "sunday": "Sun", "monday": "Mon", "tuesday": "Tue", "wednesday": "Wed", "thursday": "Thu", "friday": "Fri", "saturday": "Sat" },
-    "noEvents": "No events", "taskDue": "Task Due", "projectDeadline": "Project Deadline", "eventDetails": "Event Details"
+    "noEvents": "No events this day", "taskDue": "Task Due", "projectDeadline": "Project Deadline", "eventDetails": "Event Details",
+    "occasionTypes": {
+      "national": "National Day", "religious": "Religious Occasion",
+      "marketing": "Marketing Season", "holiday": "Public Holiday",
+      "campaign": "Campaign", "contract": "Contract Reminder",
+      "task": "Task Deadline", "project": "Project Deadline"
+    },
+    "saudiOccasions": "Saudi Occasions & Seasons",
+    "monthView": "Month", "yearView": "Year", "addEvent": "Add Event"
   },
   "reports": {
     "title": "Reports", "subtitle": "Analytics and insights",
@@ -248,5 +272,37 @@
     "notFound": "Page not found",
     "unauthorized": "You are not authorized to access this page.",
     "noSupabaseConfig": "Running in demo mode."
+  },
+  "usersRoles": {
+    "title": "Users & Roles",
+    "subtitle": "Manage team members, roles, and system permissions",
+    "addUser": "Add User",
+    "totalUsers": "Total Users",
+    "roleHierarchy": "Role Hierarchy",
+    "viewAs": "View As",
+    "exitViewAs": "Exit View",
+    "permissions": "Permissions",
+    "lastLogin": "Last Login",
+    "department": "Department",
+    "directManager": "Direct Manager",
+    "permissionsFor": "Permissions for",
+    "canView": "Can View",
+    "canDo": "Can Perform",
+    "cannotDo": "Cannot Perform",
+    "userStatus": "Status",
+    "productivity": "Productivity",
+    "tasksCompleted": "Tasks Completed",
+    "activeCampaigns": "Active Campaigns",
+    "viewAsInfo": "View the system as this user to test their permissions",
+    "adminOnly": "Admin Only Feature",
+    "teamMembers": "Team Members"
+  },
+  "viewAs": {
+    "banner": "You are viewing as:",
+    "exit": "Exit View As",
+    "title": "View As User",
+    "description": "View the system as any team member to test their permissions. This action is logged.",
+    "activity": "Admin viewed system as",
+    "selectUser": "Select User"
   }
 }

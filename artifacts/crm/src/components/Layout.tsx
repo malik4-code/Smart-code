@@ -3,11 +3,12 @@ import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
+import { useViewAs } from "../contexts/ViewAsContext";
 import {
-  LayoutDashboard, Users, Star, FolderKanban, CheckSquare,
+  LayoutDashboard, Users, Star, CheckSquare,
   Calendar, BarChart2, Menu, X, LogOut, Globe, TrendingUp,
   Megaphone, DollarSign, FileText, Activity, CheckCircle2,
-  Bell, ChevronRight
+  Bell, ChevronRight, UserCog, Eye
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockNotifications } from "../lib/enterpriseData";
@@ -22,15 +23,15 @@ const navGroups = [
   {
     key: "operations",
     items: [
-      { key: "campaigns", path: "/campaigns", icon: Megaphone },
       { key: "clients", path: "/clients", icon: Users },
+      { key: "campaigns", path: "/campaigns", icon: Megaphone },
       { key: "influencers", path: "/influencers", icon: Star },
+      { key: "calendar", path: "/calendar", icon: Calendar },
     ],
   },
   {
     key: "management",
     items: [
-      { key: "projects", path: "/projects", icon: FolderKanban },
       { key: "tasks", path: "/tasks", icon: CheckSquare },
       { key: "approvals", path: "/approvals", icon: CheckCircle2 },
     ],
@@ -39,15 +40,10 @@ const navGroups = [
     key: "admin",
     items: [
       { key: "finance", path: "/finance", icon: DollarSign },
-      { key: "documents", path: "/documents", icon: FileText },
       { key: "reports", path: "/reports", icon: BarChart2 },
+      { key: "documents", path: "/documents", icon: FileText },
       { key: "activityLog", path: "/activity", icon: Activity },
-    ],
-  },
-  {
-    key: "other",
-    items: [
-      { key: "calendar", path: "/calendar", icon: Calendar },
+      { key: "usersRoles", path: "/users-roles", icon: UserCog },
     ],
   },
 ];
@@ -56,6 +52,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const { language, setLanguage, isRTL } = useLanguage();
   const { profile, signOut } = useAuth();
+  const { viewAs, stopViewAs } = useViewAs();
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -101,7 +98,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -109,7 +105,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
           "fixed lg:static inset-y-0 z-50 flex flex-col w-64 bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out flex-shrink-0",
@@ -121,7 +116,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Logo */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-sidebar-border">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -137,11 +131,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 px-3 py-3 overflow-y-auto">
           {navGroups.map((group, gi) => (
             <div key={group.key} className={cn(gi > 0 ? "mt-3" : "")}>
-              {group.key !== "main" && group.key !== "other" && (
+              {group.key !== "main" && (
                 <p className="text-[10px] uppercase tracking-widest text-sidebar-foreground/40 px-3 mb-1.5 font-semibold">
                   {t(`nav.${group.key}`)}
                 </p>
@@ -173,7 +166,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        {/* Bottom section */}
         <div className="px-3 py-3 border-t border-sidebar-border space-y-1">
           <button
             onClick={() => setLanguage(language === "en" ? "ar" : "en")}
@@ -211,9 +203,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top header */}
         <header className="h-14 bg-card border-b border-border flex items-center px-4 gap-3 flex-shrink-0">
           <button
             className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
@@ -223,7 +213,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </button>
           <div className="flex-1" />
 
-          {/* Language switcher */}
           <button
             onClick={() => setLanguage(language === "en" ? "ar" : "en")}
             className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors border border-border"
@@ -232,7 +221,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {language === "en" ? "العربية" : "English"}
           </button>
 
-          {/* Notifications Bell */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotifOpen(!notifOpen)}
@@ -251,10 +239,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                   <h3 className="font-semibold text-sm">{t("notifications.title")}</h3>
                   {unreadCount > 0 && (
-                    <button
-                      onClick={markAllRead}
-                      className="text-xs text-primary hover:underline"
-                    >
+                    <button onClick={markAllRead} className="text-xs text-primary hover:underline">
                       {t("notifications.markAllRead")}
                     </button>
                   )}
@@ -306,7 +291,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        {/* Page content */}
+        {viewAs && (
+          <div className="bg-amber-500 text-white px-4 py-2.5 flex items-center justify-between gap-4 flex-shrink-0 shadow-sm">
+            <div className="flex items-center gap-2.5 text-sm font-medium">
+              <Eye className="w-4 h-4 flex-shrink-0" />
+              <span>
+                {t("viewAs.banner")} <strong>{viewAs.member.name}</strong>
+                <span className="font-normal opacity-80"> — {t(`roles.${viewAs.member.role}`)}</span>
+              </span>
+            </div>
+            <button
+              onClick={stopViewAs}
+              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-medium transition-colors flex-shrink-0 border border-white/30"
+            >
+              {t("viewAs.exit")}
+            </button>
+          </div>
+        )}
+
         <main className="flex-1 overflow-y-auto">
           <div className="p-6 max-w-7xl mx-auto">
             {children}

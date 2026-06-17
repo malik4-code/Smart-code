@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { ViewAsProvider } from "./contexts/ViewAsContext";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -20,6 +21,7 @@ import Approvals from "./pages/Approvals";
 import Finance from "./pages/Finance";
 import Documents from "./pages/Documents";
 import ActivityLog from "./pages/ActivityLog";
+import UsersRoles from "./pages/UsersRoles";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient({
@@ -85,6 +87,7 @@ function Router() {
       <Route path="/activity" component={() => <ProtectedRoute component={ActivityLog} />} />
       <Route path="/calendar" component={() => <ProtectedRoute component={CalendarPage} />} />
       <Route path="/reports" component={() => <ProtectedRoute component={Reports} />} />
+      <Route path="/users-roles" component={() => <ProtectedRoute component={UsersRoles} />} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -95,12 +98,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <LanguageProvider>
-          <TooltipProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-              <Router />
-            </WouterRouter>
-            <Toaster />
-          </TooltipProvider>
+          <ViewAsProvider>
+            <TooltipProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                <Router />
+              </WouterRouter>
+              <Toaster />
+            </TooltipProvider>
+          </ViewAsProvider>
         </LanguageProvider>
       </AuthProvider>
     </QueryClientProvider>

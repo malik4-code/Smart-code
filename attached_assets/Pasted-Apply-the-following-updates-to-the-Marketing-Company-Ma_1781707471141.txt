@@ -1,0 +1,259 @@
+Apply the following updates to the Marketing Company Management System.
+
+====================================
+
+1. CLIENT PROFILE UPDATES
+   ====================================
+
+When opening any client profile, show all campaigns related to this client from the beginning.
+
+Client profile must include a "Campaigns History" section.
+
+For each campaign show:
+
+* Campaign name
+* Campaign start date
+* Campaign end date
+* Campaign status
+* Campaign leader
+* Responsible employee
+* Influencers used
+* Budget
+* Final report
+* Attachments
+* Notes
+* Full campaign timeline from start to completion
+
+Add tabs inside client profile:
+
+* Overview
+* Campaigns
+* Contracts
+* Attachments
+* Invoices
+* Activity Log
+* Notes
+
+The client profile should make it easy to see everything that has been done for this client since the first campaign.
+
+====================================
+2. FIX ADD CAMPAIGN FEATURE
+===========================
+
+The "Add Campaign" button is currently not working.
+
+Fix the add campaign functionality.
+
+When clicking Add Campaign, open a campaign creation form with:
+
+* Campaign Name
+* Client
+* Brand
+* Campaign Type
+* Campaign Objective
+* Start Date
+* End Date
+* Campaign Leader
+* Responsible Employees
+* Budget
+* Platforms
+* Required Influencer Categories
+* Notes
+* Attachments
+
+After saving:
+
+* Create the campaign
+* Link it to the selected client
+* Show it inside the client profile
+* Show it inside the campaigns page
+* Create default campaign workflow tasks automatically
+
+====================================
+3. CALENDAR LOCATION & EVENTS
+=============================
+
+Move the Calendar section to be under the Influencers section in the sidebar/navigation menu.
+
+Calendar must include:
+
+* Days
+* Months
+* Year view
+* Campaign dates
+* Task deadlines
+* Content publishing dates
+* Contract reminders
+* Saudi national days and yearly occasions
+
+Add yearly occasions such as:
+
+* Saudi Founding Day
+* Saudi National Day
+* Ramadan
+* Eid Al-Fitr
+* Eid Al-Adha
+* Back to School
+* White Friday / Sales Seasons
+* New Year
+* Major marketing seasons
+
+Allow admin to add custom company events and marketing occasions.
+
+====================================
+4. INFLUENCERS PLATFORM ICONS
+=============================
+
+In the influencers page, replace platform text names with platform logos/icons.
+
+Instead of showing:
+TikTok / Snapchat / X / Instagram
+
+Show official-style icons for:
+
+* TikTok
+* Snapchat
+* X
+* Instagram
+* YouTube
+* Facebook
+
+Keep tooltip text when hovering over the icon to show the platform name.
+
+If an influencer has multiple platforms, show multiple icons.
+
+====================================
+5. USER ROLES CLARIFICATION
+===========================
+
+Add a clear "Users & Roles" page.
+
+This page should explain and display all users by hierarchy.
+
+Roles:
+
+* Company Owner / Company Responsible Person
+* CEO / Executive Director
+* Department Manager
+* Campaign Leader
+* Team Member / Employee
+* Finance Manager
+* Client Portal User
+
+For each user show:
+
+* Full Name
+* Email
+* Role
+* Department
+* Direct Manager
+* Status
+* Last Login
+* Permissions Summary
+
+====================================
+6. LOGIN AS ROLE / VIEW AS USER
+===============================
+
+Allow the Company Owner/Admin to access and view the system as any user role in the hierarchy.
+
+Add feature:
+"View As User" or "Login As Role"
+
+Admin can select:
+
+* CEO
+* Department Manager
+* Campaign Leader
+* Employee
+* Finance Manager
+* Client Portal User
+
+Purpose:
+To test permissions and see what each role can access.
+
+Important:
+
+* Admin should not need the user's password.
+* This should be a controlled admin-only feature.
+* Add activity log when admin views as another user.
+* Show a visible banner: "You are viewing as [User/Role]"
+* Allow admin to return to original admin account anytime.
+
+====================================
+7. PERMISSION VISIBILITY TESTING
+================================
+
+Add a permissions preview for each role.
+
+For every role show:
+
+* Pages they can access
+* Data they can view
+* Actions they can perform
+* Actions they cannot perform
+
+Example:
+Employee:
+
+* Can view assigned tasks only
+* Can update assigned campaign status
+* Cannot view profit margin
+* Cannot approve campaigns
+* Cannot manage users
+
+Campaign Leader:
+
+* Can view assigned campaigns
+* Can assign tasks to team members
+* Can review influencer lists
+* Cannot view full company finance
+
+Department Manager:
+
+* Can view department campaigns
+* Can approve campaign workflow
+* Can view team performance
+* Cannot manage full system settings unless allowed
+
+Company Owner/Admin:
+
+* Can view and control everything
+
+====================================
+8. ACTIVITY LOG
+===============
+
+Track all important actions:
+
+* Client profile opened
+* Campaign created
+* Campaign linked to client
+* Campaign edited
+* Admin viewed as another role
+* User permissions changed
+* Calendar event created
+* Influencer platform updated
+
+====================================
+9. UI REQUIREMENTS
+==================
+
+Keep Arabic RTL support.
+Keep English LTR support.
+
+Improve navigation order:
+
+* Dashboard
+* Clients
+* Campaigns
+* Influencers
+* Calendar
+* Tasks
+* Approvals
+* Reports
+* Finance
+* Users & Roles
+* Settings
+
+Make sure all pages are connected and no button is inactive.

@@ -5,15 +5,15 @@ import {
   ArrowLeft, Building2, Phone, Mail, Globe, MapPin, FileText,
   CheckCircle2, XCircle, User, Clock, ExternalLink,
   Megaphone, ChevronRight, Paperclip, Calendar, Bell,
-  AlertTriangle, ShieldAlert, TrendingUp
+  AlertTriangle, ShieldAlert, TrendingUp, StickyNote, Receipt, Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  mockEnterpriseClients, mockCampaigns, getContractStatus,
+  mockEnterpriseClients, mockCampaigns, mockDocuments, getContractStatus,
   type ClientStatus, type ClientPriority
 } from "../lib/enterpriseData";
 
-type DetailTab = "overview" | "campaigns" | "attachments" | "activity";
+type DetailTab = "overview" | "campaigns" | "contracts" | "attachments" | "invoices" | "activity" | "notes";
 
 function timeAgo(ts: string, isAr: boolean): string {
   const diff = (Date.now() - new Date(ts).getTime()) / 1000;
@@ -37,15 +37,26 @@ const PRIORITY_STYLES: Record<ClientPriority, string> = {
   low:    "bg-gray-50 text-gray-500 border-gray-200",
 };
 
+const FILE_ICON_BG: Record<string, string> = {
+  pdf: "bg-red-100 text-red-600", docx: "bg-blue-100 text-blue-600",
+  xlsx: "bg-emerald-100 text-emerald-600", pptx: "bg-orange-100 text-orange-600",
+  image: "bg-purple-100 text-purple-600", other: "bg-gray-100 text-gray-600",
+};
+
 export default function ClientDetail() {
   const { t, i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const [, params] = useRoute("/clients/:id");
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
+  const [newNote, setNewNote] = useState("");
+  const [notes, setNotes] = useState<string[]>([]);
 
   const client = mockEnterpriseClients.find(c => c.id === params?.id);
   const relatedCampaigns = mockCampaigns.filter(c => c.client_id === client?.id || c.client_name === client?.brand_name);
   const cs = getContractStatus(client?.contract_end_date ?? null);
+
+  const clientContracts = mockDocuments.filter(d => d.folder === "contracts" && d.client_name === client?.brand_name);
+  const clientInvoices = mockDocuments.filter(d => d.folder === "invoices" && d.client_name === client?.brand_name);
 
   if (!client) {
     return (
@@ -66,10 +77,13 @@ export default function ClientDetail() {
   ];
 
   const tabs: { key: DetailTab; label: string }[] = [
-    { key: "overview", label: t("common.viewDetails") },
-    { key: "campaigns", label: `${t("clients.relatedCampaigns")} (${relatedCampaigns.length})` },
-    { key: "attachments", label: `${t("clients.attachmentsSection")} (${client.attachments.length})` },
-    { key: "activity", label: t("clients.clientActivity") },
+    { key: "overview",     label: t("common.viewDetails") },
+    { key: "campaigns",    label: `${t("clients.relatedCampaigns")} (${relatedCampaigns.length})` },
+    { key: "contracts",    label: `${t("clients.contractsTab")} (${clientContracts.length})` },
+    { key: "attachments",  label: `${t("clients.attachmentsSection")} (${client.attachments.length})` },
+    { key: "invoices",     label: `${t("clients.invoicesTab")} (${clientInvoices.length})` },
+    { key: "activity",     label: t("clients.clientActivity") },
+    { key: "notes",        label: t("clients.notesTab") },
   ];
 
   const contractBannerCfg = {
@@ -78,6 +92,12 @@ export default function ClientDetail() {
     warning:  { cls: "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-300",  Icon: Bell },
     ok:       null,
   };
+
+  function addNote() {
+    if (!newNote.trim()) return;
+    setNotes(n => [newNote.trim(), ...n]);
+    setNewNote("");
+  }
 
   return (
     <div className="space-y-5">
@@ -249,7 +269,6 @@ export default function ClientDetail() {
                       <InfoRow label={t("clients.postalCode")} value={client.postal_code} mono />
                     </div>
                   </div>
-
                   {client.vat_subject && (
                     <div>
                       <h3 className="font-semibold text-sm mb-3">{t("clients.vatInfo")}</h3>
@@ -260,7 +279,6 @@ export default function ClientDetail() {
                       </div>
                     </div>
                   )}
-
                   {client.notes && (
                     <div>
                       <h3 className="font-semibold text-sm mb-2">{t("common.notes")}</h3>
@@ -285,7 +303,7 @@ export default function ClientDetail() {
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div className="min-w-0">
                             <p className="font-semibold text-sm group-hover:text-primary transition-colors truncate">{c.name}</p>
-                            <p className="text-xs text-muted-foreground">{c.account_manager}</p>
+                            <p className="text-xs text-muted-foreground">{c.account_manager} · {c.start_date} → {c.end_date}</p>
                           </div>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
@@ -295,16 +313,65 @@ export default function ClientDetail() {
                             <ChevronRight className="w-4 h-4 text-muted-foreground rtl:rotate-180" />
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 mb-1">
                           <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                             <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
                           </div>
                           <span className="text-xs text-muted-foreground flex-shrink-0">{pct}%</span>
-                          <span className="text-xs text-muted-foreground flex-shrink-0">{t(`campaigns.stages.${c.current_stage}`)}</span>
                         </div>
+                        <p className="text-xs text-muted-foreground">{t(`campaigns.stages.${c.current_stage}`)}</p>
                       </Link>
                     );
                   })}
+                </div>
+              )}
+
+              {activeTab === "contracts" && (
+                <div className="space-y-4">
+                  <div className="bg-muted/30 rounded-xl p-4 space-y-3">
+                    <h4 className="font-semibold text-sm flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-primary" />{t("clients.contractDates")}
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      {client.contract_start_date && <InfoRow label={t("clients.contractStartDate")} value={new Date(client.contract_start_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA")} />}
+                      {client.contract_end_date && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">{t("clients.contractEndDate")}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <p className="text-sm font-medium">{new Date(client.contract_end_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA")}</p>
+                            {cs.type && cs.type !== "ok" && (
+                              <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
+                                cs.type === "expired" ? "bg-red-100 text-red-700" :
+                                cs.type === "critical" ? "bg-orange-100 text-orange-700" : "bg-amber-100 text-amber-700"
+                              )}>
+                                {cs.type === "expired" ? t("clients.contractExpired") : t("clients.daysLeft", { count: cs.daysLeft })}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {client.contract_start_date && client.contract_end_date && (
+                      <div className="text-xs text-muted-foreground bg-card rounded-lg p-3 border border-border">
+                        {t("clients.reminderNote")}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      {isAr ? "مستندات العقود" : "Contract Documents"}
+                    </h4>
+                    {clientContracts.length === 0 ? (
+                      <div className="py-8 text-center text-muted-foreground text-sm">
+                        <FileText className="w-7 h-7 mx-auto mb-2 opacity-30" />
+                        {isAr ? "لا توجد مستندات عقود" : "No contract documents"}
+                      </div>
+                    ) : clientContracts.map(doc => (
+                      <DocRow key={doc.id} doc={doc} t={t} isAr={isAr} />
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -316,8 +383,8 @@ export default function ClientDetail() {
                     </div>
                   ) : client.attachments.map(att => (
                     <div key={att.id} className="flex items-center gap-4 p-4 rounded-xl border border-border hover:bg-muted/30 transition-colors">
-                      <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <FileText className="w-4 h-4 text-primary" />
+                      <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0", FILE_ICON_BG[att.file_type] || FILE_ICON_BG.other)}>
+                        <FileText className="w-4 h-4" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="font-medium text-sm truncate">{att.name}</p>
@@ -327,6 +394,19 @@ export default function ClientDetail() {
                       </div>
                       <span className="text-xs text-muted-foreground flex-shrink-0 uppercase font-mono bg-muted px-2 py-0.5 rounded">{att.file_type}</span>
                     </div>
+                  ))}
+                </div>
+              )}
+
+              {activeTab === "invoices" && (
+                <div className="space-y-3">
+                  {clientInvoices.length === 0 ? (
+                    <div className="py-12 text-center text-muted-foreground text-sm">
+                      <Receipt className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                      {t("clients.noInvoices")}
+                    </div>
+                  ) : clientInvoices.map(doc => (
+                    <DocRow key={doc.id} doc={doc} t={t} isAr={isAr} />
                   ))}
                 </div>
               )}
@@ -361,10 +441,75 @@ export default function ClientDetail() {
                   )}
                 </div>
               )}
+
+              {activeTab === "notes" && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <textarea
+                      value={newNote}
+                      onChange={e => setNewNote(e.target.value)}
+                      rows={3}
+                      placeholder={isAr ? "أضف ملاحظة جديدة..." : "Add a new note..."}
+                      className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                    />
+                    <button onClick={addNote}
+                      className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+                      <Plus className="w-4 h-4" />{t("clients.addNote")}
+                    </button>
+                  </div>
+                  {notes.length === 0 && !client.notes ? (
+                    <div className="py-12 text-center text-muted-foreground text-sm">
+                      <StickyNote className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                      {t("clients.noNotes")}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {notes.map((note, i) => (
+                        <div key={i} className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+                          <p className="text-sm">{note}</p>
+                          <p className="text-xs text-muted-foreground mt-2">{new Date().toLocaleDateString(isAr ? "ar-SA" : "en-SA")}</p>
+                        </div>
+                      ))}
+                      {client.notes && (
+                        <div className="p-4 rounded-xl bg-muted/30 border border-border">
+                          <p className="text-sm">{client.notes}</p>
+                          <p className="text-xs text-muted-foreground mt-2">{isAr ? "ملاحظة مضافة" : "From client record"}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function DocRow({ doc, t, isAr }: { doc: { id: string; name: string; file_type: string; file_size: string; uploaded_by: string; uploaded_at: string; campaign_name: string | null; tags: string[] }; t: (k: string) => string; isAr: boolean }) {
+  const bgCls = (FILE_ICON_BG as Record<string, string>)[doc.file_type] || FILE_ICON_BG.other;
+  return (
+    <div className="flex items-center gap-4 p-4 rounded-xl border border-border hover:bg-muted/30 transition-colors mb-2">
+      <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0", bgCls)}>
+        <FileText className="w-4 h-4" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="font-medium text-sm truncate">{doc.name}</p>
+        <p className="text-xs text-muted-foreground">
+          {doc.file_size} · {t("documents.uploadedBy")} {doc.uploaded_by}
+          {doc.campaign_name && ` · ${doc.campaign_name}`}
+        </p>
+        {doc.tags.length > 0 && (
+          <div className="flex gap-1 mt-1 flex-wrap">
+            {doc.tags.map(tag => (
+              <span key={tag} className="px-1.5 py-0.5 bg-muted rounded text-[10px] text-muted-foreground">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+      <span className="text-xs text-muted-foreground flex-shrink-0 uppercase font-mono bg-muted px-2 py-0.5 rounded">{doc.file_type}</span>
     </div>
   );
 }
