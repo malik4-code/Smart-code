@@ -1,0 +1,441 @@
+Build a complete Enterprise Influencer Relations CRM & Workflow Management System.
+
+Objective:
+Create a centralized platform for managing clients, influencers, campaigns, approvals, tasks, reports, contracts, and performance tracking with full automation.
+
+Technology:
+
+* Frontend: Modern responsive web application
+* Backend: Supabase
+* Authentication: Supabase Auth
+* Permissions: Row Level Security (RLS)
+* Languages: Arabic (RTL) and English (LTR)
+* Mobile responsive
+
+========================================
+USER ROLES & PERMISSIONS
+========================
+
+1. Admin
+
+* Full system access
+* Manage users
+* Manage permissions
+* View all reports
+* Manage settings
+
+2. Department Manager
+
+* Approve campaigns
+* Approve influencer lists
+* View department KPIs
+* Assign team leaders
+* Approve budgets
+
+3. Team Leader
+
+* Manage team tasks
+* Review influencer recommendations
+* Follow campaign progress
+* Submit approvals
+
+4. Influencer Specialist
+
+* Search influencers
+* Create influencer recommendations
+* Communicate with influencers
+* Update campaign status
+
+5. Account Manager
+
+* Manage clients
+* Create campaign requests
+* Follow client approvals
+* Generate reports
+
+6. Finance User
+
+* View budgets
+* View campaign costs
+* Generate invoices
+* Manage payments
+
+7. Client Portal User
+
+* View shared campaigns only
+* Review influencer recommendations
+* Approve or reject influencers
+* Add comments
+
+========================================
+CLIENT MANAGEMENT
+=================
+
+Create a complete client database:
+
+Fields:
+
+* Company Name
+* Industry
+* Contact Person
+* Email
+* Mobile
+* Contract Start Date
+* Contract End Date
+* Account Manager
+* Status
+* Notes
+
+Client Profile should include:
+
+* Active campaigns
+* Previous campaigns
+* Reports
+* Files
+* Contracts
+* Invoices
+
+========================================
+INFLUENCER DATABASE
+===================
+
+Create a master influencer database.
+
+Fields:
+
+* Full Name
+* Platform
+* Username
+* Category
+* Country
+* City
+* Followers
+* Engagement Rate
+* Average Views
+* Gender
+* Language
+* Contact Information
+* Price
+* Discounted Price
+* Notes
+* Status
+* Contract Status
+
+Influencer Profile should include:
+
+* Campaign history
+* Performance history
+* Previous pricing
+* Client feedback
+* Internal rating
+* Blacklist flag
+* Favorite flag
+
+========================================
+CAMPAIGN MANAGEMENT
+===================
+
+Campaign Workflow:
+
+New Request
+→ Request Review
+→ Influencer Shortlisting
+→ Internal Approval
+→ Client Review
+→ Client Approval
+→ Influencer Outreach
+→ Negotiation
+→ Contract Confirmation
+→ Content Production
+→ Content Approval
+→ Publishing
+→ Performance Tracking
+→ Final Report
+→ Campaign Closed
+
+Each stage must include:
+
+* Assigned Owner
+* Due Date
+* Status
+* Approval Requirement
+* Notes
+* Attachments
+
+========================================
+AUTOMATED TASKS
+===============
+
+Automatically create tasks when:
+
+* New campaign is created
+* Influencers are approved
+* Contract is signed
+* Content is uploaded
+* Campaign is completed
+
+Automatic reminders:
+
+* Before due date
+* On due date
+* Overdue alerts
+
+Escalation:
+
+* Notify Team Leader
+* Notify Manager
+* Flag delayed campaigns
+
+========================================
+SLA MANAGEMENT
+==============
+
+Request Review:
+2 Hours
+
+Influencer Shortlisting:
+24 Hours
+
+Internal Approval:
+12 Hours
+
+Client Approval:
+24 Hours
+
+Influencer Outreach:
+24 Hours
+
+Negotiation:
+48 Hours
+
+Final Report:
+3 Days After Campaign Completion
+
+Track:
+
+* SLA Compliance
+* Delays
+* Average Completion Time
+
+========================================
+CLIENT SHORTLIST SHARING
+========================
+
+After influencer shortlisting:
+
+Allow export as:
+
+1. PDF
+2. Excel
+3. Secure Client Link
+
+PDF includes:
+
+* Company Logo
+* Campaign Name
+* Influencer Image
+* Followers
+* Engagement Rate
+* Platform
+* Category
+* Final Client Price
+* Notes
+
+Excel includes:
+
+* Influencer Name
+* Platform
+* Followers
+* Engagement
+* Price
+* Status
+
+Secure Client Link:
+
+* Unique URL
+* Expiration Option
+* Password Protected Option
+
+Client actions:
+
+* Approve
+* Reject
+* Request Replacement
+* Add Comment
+
+========================================
+APPROVAL WORKFLOW
+=================
+
+Approval Levels:
+
+Employee
+→ Team Leader
+→ Department Manager
+→ Client
+
+No stage can proceed without approval.
+
+Store:
+
+* Approver Name
+* Approval Date
+* Comments
+* Rejections
+
+========================================
+DOCUMENT MANAGEMENT
+===================
+
+Create document center:
+
+Folders:
+
+* Contracts
+* Proposals
+* Reports
+* Invoices
+* Creative Briefs
+
+Features:
+
+* Version History
+* Download
+* Search
+* Permissions
+
+========================================
+CONTRACT MANAGEMENT
+===================
+
+Track:
+
+* Contract Status
+* Expiry Dates
+* Renewal Dates
+
+Send automatic reminders before expiry.
+
+========================================
+FINANCE MODULE
+==============
+
+Track:
+
+* Influencer Cost
+* Discount
+* Client Price
+* Profit Margin
+* Total Campaign Budget
+
+Generate:
+
+* Invoices
+* Cost Reports
+* Profit Reports
+
+Permission Levels:
+
+Employee:
+View Base Cost Only
+
+Team Leader:
+View Cost + Discount
+
+Manager:
+View Full Margin
+
+Client:
+View Final Price Only
+
+========================================
+REPORTING & ANALYTICS
+=====================
+
+Executive Dashboard:
+
+* Active Campaigns
+* Delayed Campaigns
+* Pending Approvals
+* Revenue
+* Profit
+* Campaign Performance
+
+Influencer Analytics:
+
+* Best Performing Influencers
+* Most Used Influencers
+* Average Engagement
+* ROI
+
+Client Analytics:
+
+* Total Spend
+* Campaign Count
+* Approval Speed
+
+Employee Analytics:
+
+* Tasks Completed
+* Delayed Tasks
+* Productivity Score
+* Campaign Contribution
+
+========================================
+ACTIVITY LOG
+============
+
+Track everything:
+
+* User Actions
+* Status Changes
+* Price Changes
+* Approvals
+* Rejections
+* File Uploads
+* Client Views
+
+========================================
+NOTIFICATIONS
+=============
+
+In-App Notifications
+Email Notifications
+
+Trigger when:
+
+* New Task Assigned
+* Approval Required
+* Client Responded
+* Deadline Approaching
+* Task Overdue
+
+========================================
+AI FEATURES
+===========
+
+Add AI Assistant inside CRM:
+
+* Suggest influencers based on campaign requirements.
+* Recommend replacement influencers automatically.
+* Generate campaign summaries.
+* Generate final reports automatically.
+* Generate client meeting notes.
+* Generate campaign performance insights.
+
+========================================
+FUTURE INTEGRATIONS
+===================
+
+Prepare integrations for:
+
+* TikTok
+* Snapchat
+* X
+* Instagram
+* Meta Ads
+* Google Drive
+* Google Calendar
+* WhatsApp Business
+
+System must be scalable and designed for future automation.

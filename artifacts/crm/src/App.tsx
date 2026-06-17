@@ -13,6 +13,12 @@ import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import CalendarPage from "./pages/Calendar";
 import Reports from "./pages/Reports";
+import Campaigns from "./pages/Campaigns";
+import CampaignDetail from "./pages/CampaignDetail";
+import Approvals from "./pages/Approvals";
+import Finance from "./pages/Finance";
+import Documents from "./pages/Documents";
+import ActivityLog from "./pages/ActivityLog";
 import NotFound from "./pages/not-found";
 
 const queryClient = new QueryClient({
@@ -65,10 +71,16 @@ function Router() {
     <Switch>
       <Route path="/login" component={() => <AuthRoute component={Login} />} />
       <Route path="/" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/campaigns" component={() => <ProtectedRoute component={Campaigns} />} />
+      <Route path="/campaigns/:id" component={() => <ProtectedRoute component={CampaignDetail} />} />
       <Route path="/clients" component={() => <ProtectedRoute component={Clients} />} />
       <Route path="/influencers" component={() => <ProtectedRoute component={Influencers} />} />
       <Route path="/projects" component={() => <ProtectedRoute component={Projects} />} />
       <Route path="/tasks" component={() => <ProtectedRoute component={Tasks} />} />
+      <Route path="/approvals" component={() => <ProtectedRoute component={Approvals} />} />
+      <Route path="/finance" component={() => <ProtectedRoute component={Finance} />} />
+      <Route path="/documents" component={() => <ProtectedRoute component={Documents} />} />
+      <Route path="/activity" component={() => <ProtectedRoute component={ActivityLog} />} />
       <Route path="/calendar" component={() => <ProtectedRoute component={CalendarPage} />} />
       <Route path="/reports" component={() => <ProtectedRoute component={Reports} />} />
       <Route component={NotFound} />
