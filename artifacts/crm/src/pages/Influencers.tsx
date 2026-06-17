@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { Plus, Search, Pencil, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Influencer } from "../lib/supabase";
+import { mockInfluencers } from "../lib/mockData";
 
 const platformColors: Record<string, string> = {
   instagram: "bg-pink-100 text-pink-700",
@@ -48,7 +49,11 @@ export default function Influencers() {
   useEffect(() => { fetchInfluencers(); }, []);
 
   async function fetchInfluencers() {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      setInfluencers([...mockInfluencers] as Influencer[]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data } = await supabase.from("influencers").select("*").order("created_at", { ascending: false });
     setInfluencers((data || []) as Influencer[]);
@@ -82,6 +87,15 @@ export default function Influencers() {
         estimated_price: form.estimated_price ? parseFloat(form.estimated_price) : null,
         email: form.email || null, phone: form.phone || null, notes: form.notes || null,
       };
+      if (!isSupabaseConfigured) {
+        const now = new Date().toISOString();
+        if (editing) {
+          setInfluencers(c => c.map(item => item.id === editing.id ? { ...item, ...payload, updated_at: now } : item));
+        } else {
+          setInfluencers(c => [{ ...payload, id: `demo-${Date.now()}`, created_at: now, updated_at: now } as Influencer, ...c]);
+        }
+        setDialogOpen(false); return;
+      }
       if (editing) {
         await supabase.from("influencers").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editing.id);
       } else {
@@ -94,6 +108,7 @@ export default function Influencers() {
 
   async function handleDelete() {
     if (!deleteId) return;
+    if (!isSupabaseConfigured) { setInfluencers(c => c.filter(item => item.id !== deleteId)); setDeleteId(null); return; }
     await supabase.from("influencers").delete().eq("id", deleteId);
     setDeleteId(null); fetchInfluencers();
   }

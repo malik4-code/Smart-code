@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { cn } from "@/lib/utils";
 import { Download } from "lucide-react";
+import { mockClients, mockInfluencers, mockProjects, mockTasks } from "../lib/mockData";
 
 const CHART_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#f97316"];
 
@@ -23,9 +24,31 @@ export default function Reports() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      buildFromMock();
+      return;
+    }
     fetchReportData();
   }, []);
+
+  function buildFromMock() {
+    const countBy = <T extends Record<string, unknown>>(arr: T[], key: keyof T) => {
+      const counts: Record<string, number> = {};
+      for (const item of arr) { const v = String(item[key] || "unknown"); counts[v] = (counts[v] || 0) + 1; }
+      return Object.entries(counts).map(([name, value]) => ({ name, value }));
+    };
+    const budgets = mockProjects.map(p => p.budget || 0).filter(b => b > 0);
+    setData({
+      projectsByStatus: countBy(mockProjects as any[], "status"),
+      tasksByStatus: countBy(mockTasks as any[], "status"),
+      tasksByPriority: countBy(mockTasks as any[], "priority"),
+      influencersByPlatform: countBy(mockInfluencers as any[], "platform"),
+      clientsByStatus: countBy(mockClients as any[], "status"),
+      totalBudget: budgets.reduce((a, b) => a + b, 0),
+      avgBudget: budgets.length ? budgets.reduce((a, b) => a + b, 0) / budgets.length : 0,
+    });
+    setLoading(false);
+  }
 
   async function fetchReportData() {
     setLoading(true);
@@ -94,12 +117,12 @@ export default function Reports() {
     );
   }
 
-  if (!isSupabaseConfigured || !data) {
+  if (!data) {
     return (
       <div className="space-y-6">
         <div><h1 className="text-2xl font-bold">{t("reports.title")}</h1></div>
         <div className="bg-card border border-border rounded-xl p-12 text-center">
-          <p className="text-muted-foreground text-sm">{t("errors.noSupabaseConfig")}</p>
+          <p className="text-muted-foreground text-sm">{t("common.noData")}</p>
         </div>
       </div>
     );

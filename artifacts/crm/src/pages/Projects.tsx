@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { Plus, Search, Pencil, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project, Client } from "../lib/supabase";
+import { mockProjects, mockClients } from "../lib/mockData";
 
 const statusColors: Record<string, string> = {
   planning: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
@@ -41,7 +42,11 @@ export default function Projects() {
   }, []);
 
   async function fetchProjects() {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      setProjects([...mockProjects] as (Project & { client?: Client })[]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data } = await supabase.from("projects")
       .select("*, client:clients(id, name)")
@@ -51,7 +56,10 @@ export default function Projects() {
   }
 
   async function fetchClients() {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured) {
+      setClients(mockClients.filter(c => c.status === "active") as Client[]);
+      return;
+    }
     const { data } = await supabase.from("clients").select("id, name").eq("status", "active").order("name");
     setClients((data || []) as Client[]);
   }
@@ -79,6 +87,16 @@ export default function Projects() {
         description: form.description || null, budget: form.budget ? parseFloat(form.budget) : null,
         status: form.status, start_date: form.start_date || null, end_date: form.end_date || null,
       };
+      if (!isSupabaseConfigured) {
+        const now = new Date().toISOString();
+        const client = clients.find(c => c.id === payload.client_id);
+        if (editing) {
+          setProjects(c => c.map(item => item.id === editing.id ? { ...item, ...payload, client, updated_at: now } : item));
+        } else {
+          setProjects(c => [{ ...payload, id: `demo-${Date.now()}`, client, created_at: now, updated_at: now } as Project & { client?: Client }, ...c]);
+        }
+        setDialogOpen(false); return;
+      }
       if (editing) {
         await supabase.from("projects").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editing.id);
       } else {
@@ -91,6 +109,7 @@ export default function Projects() {
 
   async function handleDelete() {
     if (!deleteId) return;
+    if (!isSupabaseConfigured) { setProjects(c => c.filter(item => item.id !== deleteId)); setDeleteId(null); return; }
     await supabase.from("projects").delete().eq("id", deleteId);
     setDeleteId(null); fetchProjects();
   }

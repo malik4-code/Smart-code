@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { Plus, Search, Pencil, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Client } from "../lib/supabase";
+import { mockClients } from "../lib/mockData";
 
 const emptyForm = {
   name: "", industry: "", email: "", phone: "",
@@ -26,7 +27,11 @@ export default function Clients() {
   useEffect(() => { fetchClients(); }, []);
 
   async function fetchClients() {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      setClients([...mockClients] as Client[]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data } = await supabase.from("clients").select("*").order("created_at", { ascending: false });
     setClients((data || []) as Client[]);
@@ -53,9 +58,18 @@ export default function Clients() {
 
   async function handleSave() {
     if (!form.name.trim()) { setError(t("common.required")); return; }
-    setSaving(true);
-    setError("");
+    setSaving(true); setError("");
     try {
+      if (!isSupabaseConfigured) {
+        const now = new Date().toISOString();
+        if (editing) {
+          setClients(c => c.map(item => item.id === editing.id ? { ...item, ...form, updated_at: now } : item));
+        } else {
+          setClients(c => [{ ...form, id: `demo-${Date.now()}`, created_at: now, updated_at: now }, ...c]);
+        }
+        setDialogOpen(false);
+        return;
+      }
       if (editing) {
         const { error: err } = await supabase.from("clients").update({ ...form, updated_at: new Date().toISOString() }).eq("id", editing.id);
         if (err) throw err;
@@ -63,20 +77,16 @@ export default function Clients() {
         const { error: err } = await supabase.from("clients").insert(form);
         if (err) throw err;
       }
-      setDialogOpen(false);
-      fetchClients();
-    } catch {
-      setError(t("errors.saveFailed"));
-    } finally {
-      setSaving(false);
-    }
+      setDialogOpen(false); fetchClients();
+    } catch { setError(t("errors.saveFailed")); }
+    finally { setSaving(false); }
   }
 
   async function handleDelete() {
     if (!deleteId) return;
+    if (!isSupabaseConfigured) { setClients(c => c.filter(item => item.id !== deleteId)); setDeleteId(null); return; }
     await supabase.from("clients").delete().eq("id", deleteId);
-    setDeleteId(null);
-    fetchClients();
+    setDeleteId(null); fetchClients();
   }
 
   const filtered = clients.filter(c =>

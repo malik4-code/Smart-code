@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Client, Task, Project } from "../lib/supabase";
+import { mockClients, mockInfluencers, mockProjects, mockTasks } from "../lib/mockData";
 
 interface Stats {
   totalClients: number;
@@ -32,7 +33,22 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      const todayStr = new Date().toISOString().split("T")[0];
+      setStats({
+        totalClients: mockClients.length,
+        totalInfluencers: mockInfluencers.length,
+        totalProjects: mockProjects.length,
+        pendingTasks: mockTasks.filter(t => t.status !== "completed" && t.status !== "cancelled").length,
+        completedTasks: mockTasks.filter(t => t.status === "completed").length,
+        overdueTasks: mockTasks.filter(t => t.status !== "completed" && t.status !== "cancelled" && !!t.due_date && t.due_date < todayStr).length,
+      });
+      setRecentClients(mockClients.slice(0, 5) as Client[]);
+      setRecentTasks(mockTasks.slice(0, 5) as Task[]);
+      setRecentProjects(mockProjects.slice(0, 5) as Project[]);
+      setLoading(false);
+      return;
+    }
     fetchAll();
   }, []);
 

@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { ChevronLeft, ChevronRight, Calendar as CalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../contexts/LanguageContext";
+import { mockTasks, mockProjects } from "../lib/mockData";
 
 interface CalEvent {
   id: string;
@@ -25,7 +26,19 @@ export default function CalendarPage() {
   useEffect(() => { fetchEvents(); }, [current]);
 
   async function fetchEvents() {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      const start = new Date(current.getFullYear(), current.getMonth(), 1).toISOString().split("T")[0];
+      const end = new Date(current.getFullYear(), current.getMonth() + 1, 0).toISOString().split("T")[0];
+      const taskEvts: CalEvent[] = mockTasks
+        .filter(t => t.due_date && t.due_date >= start && t.due_date <= end && t.status !== "cancelled")
+        .map(t => ({ id: t.id, date: t.due_date!, title: t.title, type: "task", priority: t.priority }));
+      const projEvts: CalEvent[] = mockProjects
+        .filter(p => p.end_date && p.end_date >= start && p.end_date <= end && p.status !== "cancelled")
+        .map(p => ({ id: p.id, date: p.end_date!, title: p.name, type: "project" }));
+      setEvents([...taskEvts, ...projEvts]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const start = new Date(current.getFullYear(), current.getMonth(), 1).toISOString().split("T")[0];
     const end = new Date(current.getFullYear(), current.getMonth() + 1, 0).toISOString().split("T")[0];

@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { Plus, Search, Pencil, Trash2, X, AlertCircle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Task, Project } from "../lib/supabase";
+import { mockTasks, mockProjects } from "../lib/mockData";
 
 const statusColors: Record<string, string> = {
   pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
@@ -48,7 +49,11 @@ export default function Tasks() {
   useEffect(() => { fetchTasks(); fetchProjects(); }, []);
 
   async function fetchTasks() {
-    if (!isSupabaseConfigured) { setLoading(false); return; }
+    if (!isSupabaseConfigured) {
+      setTasks([...mockTasks].sort((a, b) => (a.due_date || "").localeCompare(b.due_date || "")) as (Task & { project?: Project })[]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data } = await supabase.from("tasks")
       .select("*, project:projects(id, name)")
@@ -58,7 +63,10 @@ export default function Tasks() {
   }
 
   async function fetchProjects() {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured) {
+      setProjects(mockProjects as Project[]);
+      return;
+    }
     const { data } = await supabase.from("projects").select("id, name").order("name");
     setProjects((data || []) as Project[]);
   }
@@ -87,6 +95,16 @@ export default function Tasks() {
         status: form.status, priority: form.priority,
         due_date: form.due_date || null,
       };
+      if (!isSupabaseConfigured) {
+        const now = new Date().toISOString();
+        const project = projects.find(p => p.id === payload.project_id);
+        if (editing) {
+          setTasks(c => c.map(item => item.id === editing.id ? { ...item, ...payload, project, updated_at: now } : item));
+        } else {
+          setTasks(c => [{ ...payload, id: `demo-${Date.now()}`, assignee_id: null, project, created_at: now, updated_at: now } as Task & { project?: Project }, ...c]);
+        }
+        setDialogOpen(false); return;
+      }
       if (editing) {
         await supabase.from("tasks").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editing.id);
       } else {
@@ -99,6 +117,7 @@ export default function Tasks() {
 
   async function handleDelete() {
     if (!deleteId) return;
+    if (!isSupabaseConfigured) { setTasks(c => c.filter(item => item.id !== deleteId)); setDeleteId(null); return; }
     await supabase.from("tasks").delete().eq("id", deleteId);
     setDeleteId(null); fetchTasks();
   }

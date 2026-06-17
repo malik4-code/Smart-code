@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import type { Profile } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import { mockProfile } from "../lib/mockData";
 
 interface AuthContextType {
   user: User | null;
@@ -20,6 +21,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
+      setUser({ id: "demo-user", email: mockProfile.email } as User);
+      setProfile(mockProfile);
       setLoading(false);
       return;
     }
@@ -66,7 +69,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signOut() {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured) {
+      setUser(null);
+      setProfile(null);
+      return;
+    }
     await supabase.auth.signOut();
   }
 
