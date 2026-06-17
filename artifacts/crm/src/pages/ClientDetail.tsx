@@ -3,11 +3,15 @@ import { useTranslation } from "react-i18next";
 import { useRoute, Link } from "wouter";
 import {
   ArrowLeft, Building2, Phone, Mail, Globe, MapPin, FileText,
-  CheckCircle2, XCircle, User, Clock, Edit, ExternalLink,
-  Megaphone, ChevronRight, Paperclip
+  CheckCircle2, XCircle, User, Clock, ExternalLink,
+  Megaphone, ChevronRight, Paperclip, Calendar, Bell,
+  AlertTriangle, ShieldAlert, TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { mockEnterpriseClients, mockCampaigns } from "../lib/enterpriseData";
+import {
+  mockEnterpriseClients, mockCampaigns, getContractStatus,
+  type ClientStatus, type ClientPriority
+} from "../lib/enterpriseData";
 
 type DetailTab = "overview" | "campaigns" | "attachments" | "activity";
 
@@ -19,6 +23,20 @@ function timeAgo(ts: string, isAr: boolean): string {
   return isAr ? `${Math.floor(diff / 86400)} ي` : `${Math.floor(diff / 86400)}d ago`;
 }
 
+const STATUS_STYLES: Record<ClientStatus, string> = {
+  prospect:       "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300",
+  active:         "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
+  suspended:      "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
+  contract_ended: "bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300",
+  inactive:       "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+};
+
+const PRIORITY_STYLES: Record<ClientPriority, string> = {
+  high:   "bg-red-50 text-red-600 border-red-200",
+  medium: "bg-amber-50 text-amber-600 border-amber-200",
+  low:    "bg-gray-50 text-gray-500 border-gray-200",
+};
+
 export default function ClientDetail() {
   const { t, i18n } = useTranslation();
   const isAr = i18n.language === "ar";
@@ -27,50 +45,83 @@ export default function ClientDetail() {
 
   const client = mockEnterpriseClients.find(c => c.id === params?.id);
   const relatedCampaigns = mockCampaigns.filter(c => c.client_id === client?.id || c.client_name === client?.brand_name);
+  const cs = getContractStatus(client?.contract_end_date ?? null);
 
   if (!client) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <p className="text-muted-foreground">{t("errors.notFound")}</p>
         <Link href="/clients" className="flex items-center gap-2 text-sm text-primary hover:underline">
-          <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
-          {t("common.backToList")}
+          <ArrowLeft className="w-4 h-4 rtl:rotate-180" />{t("common.backToList")}
         </Link>
       </div>
     );
   }
 
   const STAGE_ORDER = [
-    "new_request", "request_review", "influencer_shortlisting", "internal_approval",
-    "client_review", "client_approval", "influencer_outreach", "negotiation",
-    "contract_confirmation", "content_production", "content_approval", "publishing",
-    "performance_tracking", "final_report", "campaign_closed",
+    "new_request","request_review","influencer_shortlisting","internal_approval",
+    "client_review","client_approval","influencer_outreach","negotiation",
+    "contract_confirmation","content_production","content_approval","publishing",
+    "performance_tracking","final_report","campaign_closed",
   ];
 
   const tabs: { key: DetailTab; label: string }[] = [
     { key: "overview", label: t("common.viewDetails") },
-    { key: "campaigns", label: t("clients.relatedCampaigns") },
-    { key: "attachments", label: t("clients.attachmentsSection") },
+    { key: "campaigns", label: `${t("clients.relatedCampaigns")} (${relatedCampaigns.length})` },
+    { key: "attachments", label: `${t("clients.attachmentsSection")} (${client.attachments.length})` },
     { key: "activity", label: t("clients.clientActivity") },
   ];
 
+  const contractBannerCfg = {
+    expired:  { cls: "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/30 dark:border-red-800 dark:text-red-300",  Icon: XCircle },
+    critical: { cls: "bg-orange-50 border-orange-200 text-orange-800 dark:bg-orange-950/30 dark:border-orange-800 dark:text-orange-300", Icon: ShieldAlert },
+    warning:  { cls: "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-300",  Icon: Bell },
+    ok:       null,
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center gap-3">
         <Link href="/clients" className="p-2 rounded-lg hover:bg-muted transition-colors flex-shrink-0">
           <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
         </Link>
-        <div className="min-w-0">
-          <h1 className="text-xl font-bold truncate">{client.brand_name}</h1>
-          <p className="text-sm text-muted-foreground truncate">{client.legal_company_name}</p>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-xl font-bold">{client.brand_name}</h1>
+            <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-medium", STATUS_STYLES[client.status])}>
+              {t(`clients.statuses.${client.status}`)}
+            </span>
+            {client.priority && (
+              <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-medium border", PRIORITY_STYLES[client.priority])}>
+                {t(`clients.priorities.${client.priority}`)}
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-muted-foreground mt-0.5">{client.legal_company_name}</p>
         </div>
-        <Link href="/clients" className="ms-auto hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition-colors">
-          <Edit className="w-3.5 h-3.5" />
-          {t("clients.editClient")}
-        </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {cs.type && cs.type !== "ok" && contractBannerCfg[cs.type] && (() => {
+        const { cls, Icon } = contractBannerCfg[cs.type]!;
+        return (
+          <div className={cn("flex items-start gap-3 p-4 rounded-xl border", cls)}>
+            <Icon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-sm">
+                {cs.type === "expired"
+                  ? t("clients.contractExpiredBanner")
+                  : t("clients.contractEndingBanner", { count: cs.daysLeft })}
+              </p>
+              <p className="text-xs mt-0.5 opacity-80">
+                {t("clients.contractEnd")}: {client.contract_end_date ? new Date(client.contract_end_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA") : "—"}
+                {" · "}{t("clients.reminderNote")}
+              </p>
+            </div>
+          </div>
+        );
+      })()}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-1 space-y-4">
           <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
             <div className="flex items-center gap-4 mb-5">
@@ -79,98 +130,104 @@ export default function ClientDetail() {
               </div>
               <div className="min-w-0">
                 <h2 className="font-bold text-lg leading-tight">{client.brand_name}</h2>
-                <p className="text-sm text-muted-foreground truncate">{client.industry}</p>
-                <span className={cn("inline-flex mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium",
-                  client.status === "active"
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
-                    : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-                )}>
-                  {t(`clients.${client.status}`)}
-                </span>
+                <p className="text-sm text-muted-foreground">{client.industry}</p>
               </div>
             </div>
-
-            <div className="space-y-3 text-sm">
-              {client.name && (
-                <div className="flex items-center gap-3">
-                  <User className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-muted-foreground">{client.name}</span>
-                </div>
-              )}
-              {client.phone && (
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <span dir="ltr" className="text-muted-foreground">{client.phone}</span>
-                </div>
-              )}
-              {client.email && (
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <span dir="ltr" className="text-muted-foreground truncate">{client.email}</span>
-                </div>
-              )}
+            <div className="space-y-2.5 text-sm">
+              {client.name && <ContactRow icon={<User className="w-4 h-4" />} value={client.name} />}
+              {client.phone && <ContactRow icon={<Phone className="w-4 h-4" />} value={client.phone} ltr />}
+              {client.email && <ContactRow icon={<Mail className="w-4 h-4" />} value={client.email} ltr />}
               {client.brand_link && (
                 <div className="flex items-center gap-3">
                   <Globe className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                   <a href={client.brand_link} target="_blank" rel="noopener noreferrer"
-                    className="text-primary hover:underline truncate flex items-center gap-1">
+                    className="text-primary hover:underline truncate flex items-center gap-1 text-sm">
                     {client.brand_link.replace(/^https?:\/\//, "")}
                     <ExternalLink className="w-3 h-3 flex-shrink-0" />
                   </a>
                 </div>
               )}
-              {client.city && (
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <span className="text-muted-foreground">{[client.district, client.city, client.country].filter(Boolean).join("، ")}</span>
-                </div>
-              )}
+              {client.city && <ContactRow icon={<MapPin className="w-4 h-4" />} value={[client.district, client.city, client.country].filter(Boolean).join("، ")} />}
             </div>
           </div>
 
           <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-3">
             <h3 className="font-semibold text-sm">{t("clients.legalInfo")}</h3>
-            <InfoRow label={t("clients.legalCompanyName")} value={client.legal_company_name} mono={false} />
+            <InfoRow label={t("clients.legalCompanyName")} value={client.legal_company_name} />
+            <InfoRow label={t("clients.companyType")} value={client.company_type} />
             <InfoRow label={t("clients.crNumber")} value={client.commercial_registration_number} mono />
+            {client.cr_expiry_date && <InfoRow label={t("clients.crExpiryDate")} value={new Date(client.cr_expiry_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA")} />}
             <InfoRow label={t("clients.vatStatus")} value={
               client.vat_subject
-                ? <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> {t("clients.vatSubjectShort")}
-                  </span>
-                : <span className="flex items-center gap-1 text-muted-foreground">
-                    <XCircle className="w-3.5 h-3.5" /> {t("clients.vatExempt")}
-                  </span>
+                ? <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400"><CheckCircle2 className="w-3.5 h-3.5" />{t("clients.vatSubjectShort")}</span>
+                : <span className="flex items-center gap-1 text-muted-foreground"><XCircle className="w-3.5 h-3.5" />{t("clients.vatExempt")}</span>
             } />
-            {client.vat_subject && client.vat_number && (
-              <InfoRow label={t("clients.vatNumber")} value={client.vat_number} mono />
-            )}
+            {client.vat_subject && client.vat_number && <InfoRow label={t("clients.vatNumber")} value={client.vat_number} mono />}
           </div>
 
-          {client.responsible_employee && (
-            <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-              <h3 className="font-semibold text-sm mb-3">{t("clients.responsibleEmployee")}</h3>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <User className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{client.responsible_employee}</p>
-                  <p className="text-xs text-muted-foreground">{t("clients.accountManager")}</p>
+          <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-3">
+            <h3 className="font-semibold text-sm flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-muted-foreground" />
+              {t("clients.contractDates")}
+            </h3>
+            {client.contract_start_date ? (
+              <InfoRow label={t("clients.contractStartDate")} value={new Date(client.contract_start_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA")} />
+            ) : null}
+            {client.contract_end_date ? (
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground">{t("clients.contractEndDate")}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium">{new Date(client.contract_end_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA")}</p>
+                  {cs.type && cs.type !== "ok" && (
+                    <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
+                      cs.type === "expired" ? "bg-red-100 text-red-700" :
+                      cs.type === "critical" ? "bg-orange-100 text-orange-700" :
+                      "bg-amber-100 text-amber-700"
+                    )}>
+                      {cs.type === "expired" ? t("clients.contractExpired") : t("clients.daysLeft", { count: cs.daysLeft })}
+                    </span>
+                  )}
                 </div>
               </div>
+            ) : <p className="text-sm text-muted-foreground">{t("clients.noContractDate")}</p>}
+          </div>
+
+          {(client.account_manager || client.responsible_employee) && (
+            <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-3">
+              <h3 className="font-semibold text-sm">{t("clients.assignedTeam")}</h3>
+              {client.account_manager && (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+                    <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{client.account_manager}</p>
+                    <p className="text-xs text-muted-foreground">{t("clients.accountManager")}</p>
+                  </div>
+                </div>
+              )}
+              {client.responsible_employee && client.responsible_employee !== client.account_manager && (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{client.responsible_employee}</p>
+                    <p className="text-xs text-muted-foreground">{t("clients.responsibleEmployee")}</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
 
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-            <div className="flex border-b border-border">
+            <div className="flex border-b border-border overflow-x-auto">
               {tabs.map(tab => (
                 <button key={tab.key} onClick={() => setActiveTab(tab.key)}
                   className={cn("px-4 py-3 text-xs font-medium border-b-2 transition-colors whitespace-nowrap",
-                    activeTab === tab.key
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
+                    activeTab === tab.key ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
                   )}>
                   {tab.label}
                 </button>
@@ -188,6 +245,7 @@ export default function ClientDetail() {
                       <InfoRow label={t("clients.district")} value={client.district} />
                       <InfoRow label={t("clients.streetName")} value={client.street_name} />
                       <InfoRow label={t("clients.buildingNumber")} value={client.building_number} mono />
+                      <InfoRow label={t("clients.additionalNumber")} value={client.additional_number} mono />
                       <InfoRow label={t("clients.postalCode")} value={client.postal_code} mono />
                     </div>
                   </div>
@@ -198,6 +256,7 @@ export default function ClientDetail() {
                       <div className="grid grid-cols-2 gap-3 bg-muted/30 rounded-xl p-4">
                         <InfoRow label={t("clients.vatRegisteredName")} value={client.vat_registered_name} />
                         <InfoRow label={t("clients.vatNumber")} value={client.vat_number} mono />
+                        {client.vat_expiry_date && <InfoRow label={t("clients.vatExpiryDate")} value={new Date(client.vat_expiry_date).toLocaleDateString(isAr ? "ar-SA" : "en-SA")} />}
                       </div>
                     </div>
                   )}
@@ -231,11 +290,8 @@ export default function ClientDetail() {
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
                               c.status === "active" ? "bg-green-100 text-green-700" :
-                              c.status === "completed" ? "bg-emerald-100 text-emerald-700" :
-                              "bg-gray-100 text-gray-600"
-                            )}>
-                              {t(`campaigns.statuses.${c.status}`)}
-                            </span>
+                              c.status === "completed" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"
+                            )}>{t(`campaigns.statuses.${c.status}`)}</span>
                             <ChevronRight className="w-4 h-4 text-muted-foreground rtl:rotate-180" />
                           </div>
                         </div>
@@ -256,8 +312,7 @@ export default function ClientDetail() {
                 <div className="space-y-3">
                   {client.attachments.length === 0 ? (
                     <div className="py-12 text-center text-muted-foreground text-sm">
-                      <Paperclip className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                      {t("clients.noAttachments")}
+                      <Paperclip className="w-8 h-8 mx-auto mb-2 opacity-30" />{t("clients.noAttachments")}
                     </div>
                   ) : client.attachments.map(att => (
                     <div key={att.id} className="flex items-center gap-4 p-4 rounded-xl border border-border hover:bg-muted/30 transition-colors">
@@ -270,20 +325,17 @@ export default function ClientDetail() {
                           {t(`clients.attachmentTypes.${att.attachment_type}`)} · {att.file_size} · {t("clients.uploadedBy")} {att.uploaded_by}
                         </p>
                       </div>
-                      <span className="text-xs text-muted-foreground flex-shrink-0 uppercase font-mono bg-muted px-2 py-0.5 rounded">
-                        {att.file_type}
-                      </span>
+                      <span className="text-xs text-muted-foreground flex-shrink-0 uppercase font-mono bg-muted px-2 py-0.5 rounded">{att.file_type}</span>
                     </div>
                   ))}
                 </div>
               )}
 
               {activeTab === "activity" && (
-                <div className="space-y-0">
+                <div>
                   {client.activity_log.length === 0 ? (
                     <div className="py-12 text-center text-muted-foreground text-sm">
-                      <Clock className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                      {t("clients.noActivity")}
+                      <Clock className="w-8 h-8 mx-auto mb-2 opacity-30" />{t("clients.noActivity")}
                     </div>
                   ) : (
                     <div className="relative">
@@ -295,9 +347,7 @@ export default function ClientDetail() {
                           </div>
                           <div className="flex-1 pt-1 min-w-0">
                             <p className="text-sm font-medium">{isAr ? entry.action_ar : entry.action_en}</p>
-                            {entry.details && (
-                              <p className="text-xs text-muted-foreground mt-0.5 font-mono">{entry.details}</p>
-                            )}
+                            {entry.details && <p className="text-xs text-muted-foreground mt-0.5 font-mono">{entry.details}</p>}
                             <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                               <User className="w-3 h-3" />
                               <span>{entry.user}</span>
@@ -315,6 +365,15 @@ export default function ClientDetail() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ContactRow({ icon, value, ltr = false }: { icon: React.ReactNode; value: string; ltr?: boolean }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-muted-foreground flex-shrink-0">{icon}</span>
+      <span className={cn("text-muted-foreground text-sm truncate", ltr && "direction-ltr")} dir={ltr ? "ltr" : undefined}>{value}</span>
     </div>
   );
 }

@@ -1,0 +1,175 @@
+Keep the current client creation page design and layout style.
+
+Do not redesign the page completely.
+
+Instead, extend the current form using collapsible sections/cards.
+
+====================================
+SECTION 1: BASIC INFORMATION
+============================
+
+* Brand Name *
+* Brand Website
+* Contact Person Name *
+* Contact Number *
+* Email
+* Activity Type
+* Responsible Employee (Dropdown from Employees)
+* Account Manager
+* Department
+
+====================================
+SECTION 2: LEGAL INFORMATION
+============================
+
+* Legal Company Name *
+* Commercial Registration Number *
+* Commercial Registration Expiry Date
+* Company Type
+
+====================================
+SECTION 3: NATIONAL ADDRESS
+===========================
+
+Add fields:
+
+* Country
+* City
+* District
+* Street Name
+* Postal Code
+* Building Number
+* Additional Number
+
+Add QR/Barcode Scan Button
+
+When scanning:
+
+* Auto-fill available address information
+
+====================================
+SECTION 4: TAX INFORMATION
+==========================
+
+Question:
+
+Is VAT Applicable?
+
+Options:
+
+* Yes
+* No
+
+If Yes:
+
+Show:
+
+* VAT Registered Name
+* VAT Number
+* VAT Certificate Expiry Date
+
+====================================
+SECTION 5: ATTACHMENTS
+======================
+
+Upload Areas:
+
+1. Commercial Registration
+2. VAT Certificate
+3. National Address
+4. Contract
+5. Additional Documents
+
+Accepted:
+PDF
+JPG
+PNG
+DOCX
+
+Show:
+
+* Upload Date
+* Uploaded By
+* Download Button
+* Replace File Button
+
+====================================
+SECTION 6: SMART SCANNING
+=========================
+
+Add Scan QR / Barcode Button.
+
+Support:
+
+* Commercial Registration QR
+* VAT Certificate QR
+* National Address QR
+
+After scanning:
+Auto-fill form data when available.
+
+====================================
+SECTION 7: CLIENT SETTINGS
+==========================
+
+* Client Status
+  Active
+  Inactive
+  Prospect
+  Suspended
+
+* Priority
+  High
+  Medium
+  Low
+
+* Notes
+
+====================================
+SECTION 8: INTERNAL ASSIGNMENT
+==============================
+
+* Department Manager
+* Campaign Leader
+* Responsible Employee
+
+Allow multiple employees if needed.
+
+====================================
+CLIENT PROFILE PAGE
+===================
+
+After saving the client:
+
+Display:
+
+* Company Information
+* Brand Information
+* Tax Information
+* National Address
+* Contracts
+* Attachments
+* Campaigns
+* Activity Timeline
+
+====================================
+UI REQUIREMENTS
+===============
+
+Keep current design.
+
+Improve spacing.
+
+Use tabs or collapsible sections.
+
+Show progress indicator:
+
+Basic Info
+→ Legal Info
+→ Tax Info
+→ Attachments
+→ Save
+
+Support Arabic RTL and English LTR.
+
+Use modern CRM style similar to HubSpot or Zoho.
