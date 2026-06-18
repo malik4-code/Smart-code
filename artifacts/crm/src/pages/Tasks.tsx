@@ -40,10 +40,16 @@ interface EnhancedTask extends Task {
   };
 }
 
+const TASK_TYPES = [
+  "influencer_selection", "creative_design", "video_production", "photography",
+  "content_writing", "media_buying", "event_management", "reporting", "other",
+];
+
 const emptyForm = {
   title: "", description: "",
   project_id: "", campaign_id: "", client_name: "",
   assignee_id: "", assigned_by: "", campaign_leader: "", department: "",
+  task_type: "",
   status: "pending" as "pending" | "in_progress" | "completed" | "cancelled",
   priority: "medium" as "low" | "medium" | "high" | "urgent",
   due_date: "", notes: "",
@@ -117,6 +123,7 @@ export default function Tasks() {
       assigned_by: task.assigned_by || "",
       campaign_leader: task.campaign_leader || "",
       department: task.department || "",
+      task_type: (task as any).task_type || "",
       status: task.status, priority: task.priority,
       due_date: task.due_date || "", notes: "",
     });
@@ -179,8 +186,9 @@ export default function Tasks() {
           assigned_by: assigner?.name,
           campaign_leader: leader?.name || form.campaign_leader,
           department: form.department,
+          task_type: form.task_type,
           time_logs: timeLogs,
-        };
+        } as EnhancedTask & { task_type: string };
         if (editing) {
           setTasks(c => c.map(item => item.id === editing.id ? newTask : item));
         } else {
@@ -415,6 +423,15 @@ export default function Tasks() {
                   </select>
                 </FF>
               </div>
+
+              <FF label={isAr ? "نوع المهمة" : "Task Type"}>
+                <select value={form.task_type} onChange={e => setForm(f => ({ ...f, task_type: e.target.value }))} className={ic}>
+                  <option value="">{isAr ? "اختر نوع المهمة" : "Select task type"}</option>
+                  {TASK_TYPES.map(tt => (
+                    <option key={tt} value={tt}>{t(`tasks.taskTypes.${tt}`) || tt.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</option>
+                  ))}
+                </select>
+              </FF>
 
               <div className="grid grid-cols-2 gap-4">
                 <FF label={isAr ? "تعيين إلى" : "Assigned To"}>

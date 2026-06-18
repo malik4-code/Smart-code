@@ -1,0 +1,291 @@
+Apply the following updates to Clients Module and User Permissions.
+
+====================================
+
+1. CLIENT FORM UPDATE
+   ====================================
+
+Remove field number 3 related to brand link/brand URL if currently placed as a required main field.
+
+Replace it with contract question:
+
+Question:
+Does the client have a contract?
+
+Options:
+
+* Yes
+* No
+
+If Yes:
+Show contract information and attachment section.
+
+Required if contract exists:
+
+* Contract file upload
+* Contract type
+* Contract notes
+
+If No:
+Allow saving without contract details.
+
+====================================
+2. TAX INFORMATION POSITION
+===========================
+
+Move VAT question to the first step of client creation because the legal company name and VAT registered name are usually the same.
+
+In Step 1, ask:
+
+Is the client subject to VAT?
+
+* Yes
+* No
+
+If Yes:
+Only ask for:
+
+* VAT Number
+
+Do not require VAT Registered Name unless added manually as optional.
+
+Remove VAT certificate expiry date.
+Remove any tax expiry date field.
+
+====================================
+3. REMOVE EXPIRY DATES
+======================
+
+Remove:
+
+* VAT Certificate Expiry Date
+* Commercial Registration Expiry Date
+* Contract End Date if it is not needed
+
+Keep only the fields actually used by the company.
+
+====================================
+4. CAMPAIGN RESPONSIBILITY STRUCTURE
+====================================
+
+When adding a client:
+
+Add two separate fields:
+
+1. Account Manager / Campaign Leader
+
+* Required
+* Single employee selection
+* This person is the main responsible person for the client/campaign
+
+2. Campaign Team
+
+* Optional
+* Multi-select employees
+* Usually 2 or 3 team members
+
+Logic:
+
+* The Account Manager is also the Campaign Leader by default.
+* The Campaign Team members work under the Account Manager.
+* The client and campaigns should appear in the dashboard of the Account Manager and assigned team members only.
+
+====================================
+5. CLIENT CREATION FLOW
+=======================
+
+Client form should be step-by-step:
+
+Step 1: Basic + VAT
+
+* Brand Name
+* Contact Number
+* Legal Company Name
+* Commercial Registration Number
+* Is VAT Applicable?
+* VAT Number if Yes
+
+Step 2: National Address
+
+* Country
+* City
+* District
+* Street Name
+* Building Number
+* Postal Code
+
+Validation:
+
+* Building Number must be exactly 4 digits
+* Postal Code must be exactly 5 digits
+
+Step 3: Contract
+
+* Does the client have a contract?
+* If Yes, upload contract and complete contract fields
+* If No, continue without contract
+
+Step 4: Attachments
+
+* Commercial Registration
+* VAT Certificate if available
+* National Address
+* Contract if available
+* Other Documents
+* Barcode / QR Scan option
+
+Step 5: Responsibility
+
+* Account Manager / Campaign Leader
+* Campaign Team
+
+Final button:
+Save Client
+
+Do not allow final save until required basic fields are completed.
+
+====================================
+6. PERMISSIONS ARE VERY IMPORTANT
+=================================
+
+Implement strict role-based permissions.
+
+Campaign visibility rules:
+
+* Company Owner:
+  Can view all clients, campaigns, tasks, reports, and users.
+
+* CEO:
+  Can view all company clients, campaigns, tasks, and reports.
+
+* Department Manager:
+  Can view all campaigns under their department.
+
+* Account Manager / Campaign Leader:
+  Can view only clients and campaigns assigned to them.
+
+* Team Member:
+  Can view only campaigns and tasks assigned to them.
+
+* Finance Manager:
+  Can view financial data, VAT, invoices, contracts, and payment-related information only.
+
+* Client Portal User:
+  Can view only shared client reports/proposals and approve/reject shared items.
+
+Important:
+Do not show any campaign to a user unless:
+
+* They are assigned to the campaign
+* They are part of the campaign team
+* They are the campaign leader
+* They are Department Manager or above
+
+====================================
+7. EMPLOYEE PERSONAL DASHBOARD
+==============================
+
+Each employee must have their own dashboard.
+
+Employee dashboard should show only:
+
+* My assigned campaigns
+* My assigned tasks
+* My pending approvals
+* My deadlines
+* My delayed tasks
+* My campaign updates
+* My notifications
+
+Do not show:
+
+* Other employees' campaigns
+* Full company campaigns
+* Profit margin
+* Unassigned clients
+* Unassigned tasks
+
+====================================
+8. MANAGER DASHBOARD
+====================
+
+Department Manager dashboard should show:
+
+* All campaigns under the department
+* Campaign leader name beside each campaign
+* Team members assigned to each campaign
+* Task progress
+* Delayed tasks
+* Pending approvals
+* Team workload
+
+====================================
+9. PERMISSION MANAGEMENT PAGE
+=============================
+
+Add a permissions management page.
+
+Admin/Company Owner can:
+
+* Create users
+* Assign roles
+* Assign department
+* Assign direct manager
+* Give permissions
+* Remove permissions
+* Activate/deactivate users
+
+Permissions should be controlled per page and per action:
+
+Pages:
+
+* Clients
+* Campaigns
+* Influencers
+* Tasks
+* Reports
+* Finance
+* Users
+* Settings
+
+Actions:
+
+* View
+* Create
+* Edit
+* Delete
+* Approve
+* Export
+* Share with Client
+
+====================================
+10. VIEW AS USER
+================
+
+Add feature:
+View As User
+
+Admin can open the system as any user to check what appears on their dashboard.
+
+Requirements:
+
+* Admin can select a user
+* System shows exactly what that user can see
+* Show banner: Viewing as [User Name / Role]
+* Add button: Return to Admin View
+* Log this action in activity log
+
+====================================
+11. ACTIVITY LOG
+================
+
+Track:
+
+* User permission changes
+* Campaign assignment changes
+* Client assignment changes
+* User viewed as another user
+* Contract question changed
+* VAT status changed
+* Attachments uploaded
+* Client created or edited

@@ -218,6 +218,18 @@
     "departments": {
       "marketing": "التسويق", "creative": "الإبداع", "finance": "المالية",
       "operations": "العمليات", "management": "الإدارة", "influencer_relations": "علاقات المؤثرين"
+    },
+    "taskType": "نوع المهمة",
+    "taskTypes": {
+      "influencer_selection": "اختيار مؤثرين",
+      "creative_design": "تصميم إبداعي",
+      "video_production": "إنتاج فيديو",
+      "photography": "تصوير فوتوغرافي",
+      "content_writing": "كتابة محتوى",
+      "media_buying": "شراء إعلانات",
+      "event_management": "إدارة فعاليات",
+      "reporting": "تقارير",
+      "other": "أخرى"
     }
   },
   "calendar": {

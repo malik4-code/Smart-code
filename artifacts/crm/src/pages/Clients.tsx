@@ -24,15 +24,15 @@ const ATTACHMENT_TYPES: { value: ClientAttachmentType; label_en: string; label_a
 const CLIENT_STATUSES: ClientStatus[] = ["prospect", "active", "suspended", "contract_ended"];
 const CLIENT_PRIORITIES: ClientPriority[] = ["high", "medium", "low"];
 
-const STEPS = ["basic", "address", "legal", "attachments", "team"] as const;
+const STEPS = ["basic", "address", "contract", "attachments", "team"] as const;
 type Step = typeof STEPS[number];
 
 const STEP_META: Record<Step, { icon: string; title_en: string; title_ar: string }> = {
-  basic:       { icon: "1", title_en: "Basic Information",  title_ar: "المعلومات الأساسية" },
-  address:     { icon: "2", title_en: "National Address",   title_ar: "العنوان الوطني" },
-  legal:       { icon: "3", title_en: "Legal & Contract",   title_ar: "القانوني والعقد" },
-  attachments: { icon: "4", title_en: "Attachments",        title_ar: "المرفقات" },
-  team:        { icon: "5", title_en: "Team & Notes",       title_ar: "الفريق والملاحظات" },
+  basic:       { icon: "1", title_en: "Basic Information",    title_ar: "المعلومات الأساسية" },
+  address:     { icon: "2", title_en: "National Address",     title_ar: "العنوان الوطني" },
+  contract:    { icon: "3", title_en: "Contract Information", title_ar: "معلومات العقد" },
+  attachments: { icon: "4", title_en: "Attachments",          title_ar: "المرفقات" },
+  team:        { icon: "5", title_en: "Team & Notes",         title_ar: "الفريق والملاحظات" },
 };
 
 const emptyForm = () => ({
@@ -43,6 +43,7 @@ const emptyForm = () => ({
   legal_company_name: "", commercial_registration_number: "",
   cr_expiry_date: "", company_type: "",
   contract_start_date: null as string | null, contract_end_date: null as string | null,
+  has_contract: false, contract_notes: "",
   country: "المملكة العربية السعودية", city: "", district: "",
   street_name: "", additional_number: "", postal_code: "", building_number: "",
   vat_subject: false, vat_registered_name: "", vat_number: "", vat_expiry_date: "",
@@ -132,6 +133,8 @@ export default function Clients() {
       postal_code: client.postal_code, building_number: client.building_number,
       vat_subject: client.vat_subject, vat_registered_name: client.vat_registered_name,
       vat_number: client.vat_number, vat_expiry_date: client.vat_expiry_date,
+      has_contract: !!(client.contract_start_date || client.contract_end_date),
+      contract_notes: (client as any).contract_notes || "",
       notes: client.notes,
     });
     setFormAttachments([...client.attachments]);
@@ -153,6 +156,9 @@ export default function Clients() {
       if (form.postal_code && !/^\d{5}$/.test(form.postal_code.trim())) {
         errors.postal_code = isAr ? "يجب أن يكون الرمز البريدي 5 أرقام بالضبط" : "Postal code must be exactly 5 digits";
       }
+    }
+    if (step === "team") {
+      if (!form.account_manager_id) errors.account_manager_id = isAr ? "قائد الحملة مطلوب" : "Campaign Leader is required";
     }
     return errors;
   }
@@ -431,6 +437,36 @@ export default function Clients() {
                       </select>
                     </FF>
                   </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FF label={t("clients.companyType")}>
+                      <select value={form.company_type} onChange={e => setForm(f => ({ ...f, company_type: e.target.value }))} className={ic}>
+                        <option value="">{t("common.select")}</option>
+                        {["شركة ذات مسؤولية محدودة", "مؤسسة فردية", "شركة مساهمة", "شركة تضامن", "Other"].map(ct => (
+                          <option key={ct} value={ct}>{ct}</option>
+                        ))}
+                      </select>
+                    </FF>
+                    <FF label={t("clients.crExpiryDate")}>
+                      <input type="date" value={form.cr_expiry_date} onChange={e => setForm(f => ({ ...f, cr_expiry_date: e.target.value }))} className={ic} dir="ltr" />
+                    </FF>
+                  </div>
+                  <div className="p-4 rounded-xl border border-border bg-muted/20">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">{t("clients.vatSubject")}</span>
+                      <button type="button" onClick={() => setForm(f => ({ ...f, vat_subject: !f.vat_subject }))}
+                        className={cn("relative w-11 h-6 rounded-full transition-colors", form.vat_subject ? "bg-primary" : "bg-muted-foreground/30")}>
+                        <span className={cn("absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all",
+                          form.vat_subject ? "start-6" : "start-1")} />
+                      </button>
+                    </div>
+                    {form.vat_subject && (
+                      <div className="pt-2 border-t border-border">
+                        <FF label={t("clients.vatNumber")}>
+                          <input value={form.vat_number} onChange={e => setForm(f => ({ ...f, vat_number: e.target.value }))} className={ic} dir="ltr" />
+                        </FF>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -473,62 +509,56 @@ export default function Clients() {
                 </div>
               )}
 
-              {currentStep === "legal" && (
+              {currentStep === "contract" && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-muted-foreground">{isAr ? "يمكنك مسح QR / باركود لملء البيانات تلقائياً" : "Scan QR / barcode to auto-fill legal data"}</p>
-                    <button onClick={simulateScan} disabled={scanning}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-xs font-medium hover:bg-muted transition-colors disabled:opacity-60">
-                      {scanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <QrCode className="w-3.5 h-3.5" />}
-                      {scanning ? t("clients.scanning") : t("clients.scanQR")}
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FF label={t("clients.companyType")}>
-                      <select value={form.company_type} onChange={e => setForm(f => ({ ...f, company_type: e.target.value }))} className={ic}>
-                        <option value="">{t("common.select")}</option>
-                        {["شركة ذات مسؤولية محدودة", "مؤسسة فردية", "شركة مساهمة", "شركة تضامن", "Other"].map(ct => (
-                          <option key={ct} value={ct}>{ct}</option>
-                        ))}
-                      </select>
-                    </FF>
-                    <FF label={t("clients.crExpiryDate")}>
-                      <input type="date" value={form.cr_expiry_date} onChange={e => setForm(f => ({ ...f, cr_expiry_date: e.target.value }))} className={ic} dir="ltr" />
-                    </FF>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FF label={t("clients.contractStartDate")}>
-                      <input type="date" value={form.contract_start_date || ""} onChange={e => setForm(f => ({ ...f, contract_start_date: e.target.value || null }))} className={ic} dir="ltr" />
-                    </FF>
-                    <FF label={t("clients.contractEndDate")}>
-                      <input type="date" value={form.contract_end_date || ""} onChange={e => setForm(f => ({ ...f, contract_end_date: e.target.value || null }))} className={ic} dir="ltr" />
-                    </FF>
-                  </div>
                   <div className="p-4 rounded-xl border border-border bg-muted/20">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium">{t("clients.vatSubject")}</span>
-                      <button onClick={() => setForm(f => ({ ...f, vat_subject: !f.vat_subject }))}
-                        className={cn("relative w-11 h-6 rounded-full transition-colors", form.vat_subject ? "bg-primary" : "bg-muted-foreground/30")}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">{isAr ? "هل يملك العميل عقداً؟" : "Does the client have a contract?"}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "يمكن إضافة تفاصيل العقد لاحقاً" : "Contract details can be added later"}</p>
+                      </div>
+                      <button type="button" onClick={() => setForm(f => ({ ...f, has_contract: !f.has_contract }))}
+                        className={cn("relative w-11 h-6 rounded-full transition-colors flex-shrink-0", form.has_contract ? "bg-primary" : "bg-muted-foreground/30")}>
                         <span className={cn("absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all",
-                          form.vat_subject ? "start-6" : "start-1")} />
+                          form.has_contract ? "start-6" : "start-1")} />
                       </button>
                     </div>
-                    {form.vat_subject && (
-                      <div className="space-y-3 pt-2 border-t border-border">
+                    {form.has_contract && (
+                      <div className="space-y-3 pt-4 mt-4 border-t border-border">
                         <div className="grid grid-cols-2 gap-3">
-                          <FF label={t("clients.vatRegisteredName")}>
-                            <input value={form.vat_registered_name} onChange={e => setForm(f => ({ ...f, vat_registered_name: e.target.value }))} className={ic} />
+                          <FF label={t("clients.contractStartDate")}>
+                            <input type="date" value={form.contract_start_date || ""} onChange={e => setForm(f => ({ ...f, contract_start_date: e.target.value || null }))} className={ic} dir="ltr" />
                           </FF>
-                          <FF label={t("clients.vatNumber")}>
-                            <input value={form.vat_number} onChange={e => setForm(f => ({ ...f, vat_number: e.target.value }))} className={ic} dir="ltr" />
+                          <FF label={t("clients.contractEndDate")}>
+                            <input type="date" value={form.contract_end_date || ""} onChange={e => setForm(f => ({ ...f, contract_end_date: e.target.value || null }))} className={ic} dir="ltr" />
                           </FF>
                         </div>
-                        <FF label={t("clients.vatExpiryDate")}>
-                          <input type="date" value={form.vat_expiry_date} onChange={e => setForm(f => ({ ...f, vat_expiry_date: e.target.value }))} className={ic} dir="ltr" />
+                        <FF label={isAr ? "ملاحظات العقد" : "Contract Notes"}>
+                          <textarea value={form.contract_notes} onChange={e => setForm(f => ({ ...f, contract_notes: e.target.value }))}
+                            rows={3} className={cn(ic, "h-auto py-2 resize-none")}
+                            placeholder={isAr ? "أضف ملاحظات حول العقد..." : "Add notes about the contract..."} />
                         </FF>
+                        <button type="button" onClick={() => {
+                          setFormAttachments(prev => [...prev, {
+                            id: `at-${Date.now()}-contract`, name: isAr ? "العقد" : "Contract",
+                            attachment_type: "contract" as ClientAttachmentType, file_type: "pdf", file_size: "—",
+                            uploaded_by: isAr ? "المستخدم الحالي" : "Current User", uploaded_at: new Date().toISOString(),
+                          }]);
+                        }}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs font-medium hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors">
+                          <Upload className="w-3.5 h-3.5" />
+                          {isAr ? "رفع ملف العقد" : "Upload Contract File"}
+                        </button>
                       </div>
                     )}
                   </div>
+                  {!form.has_contract && (
+                    <div className="py-12 text-center text-muted-foreground text-sm border border-dashed border-border rounded-xl">
+                      <FileText className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                      <p>{isAr ? "لا يوجد عقد مسجّل لهذا العميل حتى الآن" : "No contract registered for this client yet"}</p>
+                      <p className="text-xs mt-1 opacity-70">{isAr ? "فعّل المفتاح أعلاه لإضافة تفاصيل العقد" : "Toggle the switch above to add contract details"}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -600,7 +630,7 @@ export default function Clients() {
 
               {currentStep === "team" && (
                 <div className="space-y-4">
-                  <FF label={t("clients.accountManager")}>
+                  <FF label={`${isAr ? "قائد الحملة" : "Campaign Leader"} *`} error={stepErrors.account_manager_id}>
                     <div className="relative">
                       <User className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <select value={form.account_manager_id || ""}
@@ -608,9 +638,9 @@ export default function Clients() {
                           const emp = e.target.value ? mockTeamMembers.find(m => m.id === e.target.value) : null;
                           setForm(f => ({ ...f, account_manager_id: e.target.value || null, account_manager: emp?.name || null }));
                         }}
-                        className={cn(ic, "ps-9")}>
-                        <option value="">{t("clients.selectEmployee")}</option>
-                        {mockTeamMembers.map(emp => <option key={emp.id} value={emp.id}>{emp.name} — {t(`roles.${emp.role}`)}</option>)}
+                        className={cn(ic, "ps-9", stepErrors.account_manager_id && errCls)}>
+                        <option value="">{isAr ? "اختر قائد الحملة *" : "Select Campaign Leader *"}</option>
+                        {mockTeamMembers.filter(m => ["team_leader", "dept_manager", "admin", "manager"].includes(m.role)).map(emp => <option key={emp.id} value={emp.id}>{emp.name} — {t(`roles.${emp.role}`)}</option>)}
                       </select>
                     </div>
                   </FF>

@@ -1,0 +1,471 @@
+Apply the following updates and improvements to the Marketing Company Management System.
+
+====================================
+CLIENTS MODULE
+==============
+
+1. Client creation must be a step-by-step process.
+
+Do not allow saving the client until all required basic information is completed.
+
+Use:
+Step 1 → Basic Information
+Step 2 → National Address
+Step 3 → Contract Information
+Step 4 → Attachments
+Step 5 → Team Assignment
+Step 6 → Save Client
+
+Use "Next" button instead of immediate save.
+
+====================================
+VAT INFORMATION
+===============
+
+Move VAT question to the first step.
+
+Question:
+Is the client subject to VAT?
+
+Options:
+
+* Yes
+* No
+
+If Yes:
+Show:
+
+* VAT Number only
+
+Remove:
+
+* VAT Registered Name
+* VAT Expiry Date
+
+====================================
+CONTRACT INFORMATION
+====================
+
+Question:
+Does the client have a contract?
+
+Options:
+
+* Yes
+* No
+
+If Yes:
+Show:
+
+* Contract Upload
+* Contract Notes
+
+If No:
+Allow moving to next step.
+
+====================================
+CAMPAIGN RESPONSIBILITY
+=======================
+
+Replace "Campaign Responsible Employee" with:
+
+1. Account Manager / Campaign Leader
+
+* Required
+* Single employee selection
+
+2. Campaign Team
+
+* Multi-select employees
+* Allow 2, 3, or more employees
+
+Campaign Leader is the main owner of the client.
+
+Campaign Team works under Campaign Leader.
+
+====================================
+NATIONAL ADDRESS
+================
+
+Fields:
+
+* Country
+* City
+* District
+* Street Name
+* Building Number
+* Postal Code
+
+Validation:
+
+Building Number:
+Exactly 4 digits
+
+Postal Code:
+Exactly 5 digits
+
+====================================
+ATTACHMENTS
+===========
+
+Allow uploading:
+
+* Commercial Registration
+* VAT Certificate
+* National Address
+* Contract
+* Other Documents
+
+Add:
+
+QR Code / Barcode Scan
+
+Allow:
+
+* Upload file
+* Scan QR Code
+* Auto-fill available data
+
+====================================
+CLIENT PROFILE
+==============
+
+When opening a client profile, show complete history.
+
+Tabs:
+
+* Overview
+* Campaigns
+* Contracts
+* Attachments
+* Notes
+* Activity Log
+
+Campaigns tab must display:
+
+* Active Campaigns
+* Previous Campaigns
+* Upcoming Campaigns
+* Completed Campaigns
+
+For each campaign show:
+
+* Campaign Name
+* Campaign Status
+* Start Date
+* End Date
+* Campaign Leader
+* Campaign Team
+* Budget
+* Influencers Used
+* Final Report
+* Attachments
+* Timeline
+
+The client profile should become the complete history of the client.
+
+====================================
+CAMPAIGNS MODULE
+================
+
+Fix Add Campaign functionality completely.
+
+Campaign creation form should include:
+
+* Campaign Name
+* Client
+* Brand
+* Campaign Objective
+* Campaign Type
+* Product Link
+* Brand Link
+* Campaign Start Date
+* Campaign End Date
+* Campaign Leader
+* Campaign Team
+* Budget
+* Notes
+* Attachments
+
+Replace platform names with platform icons:
+
+* Snapchat Icon
+* TikTok Icon
+* Instagram Icon
+* X Icon
+* YouTube Icon
+* Facebook Icon
+
+Allow selecting one or multiple platforms using icons.
+
+====================================
+TASK DELIVERY TIME
+==================
+
+Add:
+
+Task Delivery Deadline
+
+Campaign Delivery Deadline
+
+All timing should be automated.
+
+Track:
+
+* Created Date
+* Assigned Date
+* Accepted Date
+* Started Date
+* Completed Date
+* Delayed Date
+* Last Updated
+
+====================================
+CAMPAIGN WORKSPACE
+==================
+
+Add button:
+
+"Start Working On Campaign"
+
+When opening a campaign, create a dedicated workspace.
+
+Inside campaign workspace:
+
+Section 1:
+Influencer Selection
+
+Section 2:
+Campaign Team Tasks
+
+Section 3:
+Creative Requests
+
+Section 4:
+Content Approval
+
+Section 5:
+Reports
+
+Section 6:
+Attachments
+
+====================================
+TASK TYPES
+==========
+
+Campaigns are not only influencer campaigns.
+
+Allow creation of multiple task types:
+
+* Influencer Selection
+* Creative Design
+* Video Production
+* Photography
+* Content Writing
+* Media Buying
+* Event Management
+* Reporting
+* Other
+
+Campaign Leader should be able to assign any task type.
+
+====================================
+INFLUENCERS MODULE
+==================
+
+Each influencer must support multiple platforms.
+
+Show all platform icons on influencer profile.
+
+Each platform must contain:
+
+* Username
+* Profile Link
+* Followers
+* Views
+* Engagement Rate
+* Cost Price
+* Client Selling Price
+
+====================================
+ADVANCED INFLUENCER FILTERS
+===========================
+
+Add filters:
+
+* Platform
+* Gender
+* Category
+* Country
+* City
+* Followers Range
+* Views Range
+* Engagement Range
+* Cost Price Range
+* Selling Price Range
+* Shows Face
+* Licensed
+* Campaign Rating
+* Availability
+* Blacklist
+* Favorite
+* Worked With Client Before
+* Accounting Code
+
+Database should support 7,000+ influencers efficiently.
+
+====================================
+INFLUENCER DATA
+===============
+
+Required fields:
+
+* Name
+* Gender
+* Category
+* Accounting Code
+* License
+* Contact Number
+* Personal Number
+* Shows Face
+* Influencer Notes
+* Influencer Photo
+
+Pricing:
+Each platform must have separate:
+
+* Cost Price
+* Selling Price
+
+Address:
+
+* Country
+* City
+* District
+* Street Name
+* Building Number
+* Postal Code
+
+Bank Information:
+
+* Bank Name
+* Account Holder
+* IBAN
+* Account Number
+
+Campaign Rating:
+Automatically calculated from:
+
+* Campaign Results
+* Team Feedback
+* Client Feedback
+
+====================================
+PERMISSIONS
+===========
+
+Very Important.
+
+Do not allow users to see campaigns that are not assigned to them.
+
+Company Owner:
+Can view everything.
+
+CEO:
+Can view everything.
+
+Department Manager:
+Can view all campaigns under department.
+
+Campaign Leader:
+Can only view campaigns assigned to them.
+
+Campaign Team:
+Can only view campaigns assigned to them.
+
+Finance Manager:
+Can view financial information only.
+
+Client Portal:
+Can only view shared campaigns and reports.
+
+====================================
+EMPLOYEE DASHBOARD
+==================
+
+Each employee must have a personal dashboard.
+
+Show:
+
+* My Campaigns
+* My Tasks
+* My Deadlines
+* My Approvals
+* My Notifications
+
+Do not show other campaigns.
+
+====================================
+USER ROLES & TESTING
+====================
+
+Create demo users for testing:
+
+* Company Owner
+* CEO
+* Department Manager
+* Campaign Leader
+* Campaign Team Member
+* Finance Manager
+* Client Portal User
+
+Add:
+
+View As User
+
+Admin can enter any role without password and preview the exact experience.
+
+Show:
+
+"You are viewing as [Role Name]"
+
+Add:
+
+Return To Admin View
+
+Track all actions in activity log.
+
+====================================
+NAVIGATION
+==========
+
+Dashboard
+
+Clients
+
+Campaigns
+
+Influencers
+
+Calendar
+
+Tasks
+
+Approvals
+
+Reports
+
+Finance
+
+Users & Roles
+
+Settings
+
+====================================
+GENERAL REQUIREMENT
+===================
+
+Make the system suitable for a full marketing company and not only influencer management.
+
+All buttons and workflows must be fully functional and connected.

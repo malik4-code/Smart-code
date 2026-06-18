@@ -219,6 +219,18 @@
     "departments": {
       "marketing": "Marketing", "creative": "Creative", "finance": "Finance",
       "operations": "Operations", "management": "Management", "influencer_relations": "Influencer Relations"
+    },
+    "taskType": "Task Type",
+    "taskTypes": {
+      "influencer_selection": "Influencer Selection",
+      "creative_design": "Creative Design",
+      "video_production": "Video Production",
+      "photography": "Photography",
+      "content_writing": "Content Writing",
+      "media_buying": "Media Buying",
+      "event_management": "Event Management",
+      "reporting": "Reporting",
+      "other": "Other"
     }
   },
   "calendar": {

@@ -44,9 +44,62 @@ const CAMPAIGN_TYPES = ["awareness", "engagement", "conversion", "branding", "la
 
 const emptyForm = {
   name: "", client_id: "", client_name: "", campaign_type: "awareness", objective: "",
+  brand: "", product_link: "", brand_link: "",
   start_date: "", end_date: "", team_leader: "", account_manager: "",
-  budget: "", priority: "medium", platforms: [] as string[], categories: [] as string[], notes: "",
+  budget: "", priority: "medium", platforms: [] as string[], categories: [] as string[],
+  campaign_team: [] as string[], notes: "",
 };
+
+const PLATFORM_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
+  instagram: { bg: "bg-gradient-to-br from-pink-500 via-red-500 to-yellow-400", text: "text-white", ring: "ring-pink-400" },
+  tiktok:    { bg: "bg-black",                    text: "text-white",  ring: "ring-gray-600" },
+  snapchat:  { bg: "bg-yellow-400",               text: "text-black",  ring: "ring-yellow-300" },
+  x:         { bg: "bg-black",                    text: "text-white",  ring: "ring-gray-700" },
+  youtube:   { bg: "bg-red-600",                  text: "text-white",  ring: "ring-red-400" },
+  facebook:  { bg: "bg-blue-600",                 text: "text-white",  ring: "ring-blue-400" },
+  linkedin:  { bg: "bg-blue-700",                 text: "text-white",  ring: "ring-blue-500" },
+};
+
+function PlatformSVG({ platform }: { platform: string }) {
+  if (platform === "instagram") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <rect x="2" y="2" width="20" height="20" rx="5" fill="none"/>
+      <path d="M12 7a5 5 0 100 10A5 5 0 0012 7zm0 8a3 3 0 110-6 3 3 0 010 6z"/>
+      <circle cx="17.5" cy="6.5" r="1.5"/>
+    </svg>
+  );
+  if (platform === "tiktok") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.34a8.16 8.16 0 004.77 1.52V7.38a4.85 4.85 0 01-1-.69z"/>
+    </svg>
+  );
+  if (platform === "snapchat") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <path d="M12 2C8.97 2 7 4.29 7 7v1.6c-.5.1-1.1.07-1.6.5-.4.34-.6.9-.4 1.4.36.9 1.2 1.1 1.9 1.3-.1.4-.3.8-.55 1.2-.6 1-1.5 1.5-2.35 1.8-.2.07-.4.2-.4.5 0 .56.85.7 1.6.87.1.5.22 1 .73 1 .32 0 .6-.1.87-.18.43-.14.86-.28 1.4-.12.38.1.77.45 1.22.82.56.47 1.2 1 2.08 1 .88 0 1.52-.53 2.08-1 .45-.37.84-.72 1.22-.82.54-.16.97-.02 1.4.12.27.08.55.18.87.18.51 0 .63-.5.73-1 .75-.17 1.6-.31 1.6-.87 0-.3-.2-.43-.4-.5-.85-.3-1.75-.8-2.35-1.8-.25-.4-.45-.8-.55-1.2.7-.2 1.54-.4 1.9-1.3.2-.5 0-1.06-.4-1.4-.5-.43-1.1-.4-1.6-.5V7c0-2.71-1.97-5-5-5z"/>
+    </svg>
+  );
+  if (platform === "x") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+  );
+  if (platform === "youtube") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.5V8.5l6.25 3.5-6.25 3.5z"/>
+    </svg>
+  );
+  if (platform === "facebook") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+    </svg>
+  );
+  if (platform === "linkedin") return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    </svg>
+  );
+  return <span className="text-xs font-bold">{platform.charAt(0).toUpperCase()}</span>;
+}
 
 export default function Campaigns() {
   const { t, i18n } = useTranslation();
@@ -103,6 +156,13 @@ export default function Campaigns() {
     setForm(f => ({
       ...f,
       categories: f.categories.includes(c) ? f.categories.filter(x => x !== c) : [...f.categories, c],
+    }));
+  }
+
+  function toggleCampaignTeam(id: string) {
+    setForm(f => ({
+      ...f,
+      campaign_team: f.campaign_team.includes(id) ? f.campaign_team.filter(x => x !== id) : [...f.campaign_team, id],
     }));
   }
 
@@ -322,6 +382,21 @@ export default function Campaigns() {
                 </div>
               </FormField>
 
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <FormField label={isAr ? "العلامة التجارية" : "Brand"}>
+                  <input value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))}
+                    className={inputCls} placeholder={isAr ? "اسم العلامة التجارية" : "Brand name"} />
+                </FormField>
+                <FormField label={isAr ? "رابط المنتج" : "Product Link"}>
+                  <input value={form.product_link} onChange={e => setForm(f => ({ ...f, product_link: e.target.value }))}
+                    className={inputCls} dir="ltr" placeholder="https://" />
+                </FormField>
+                <FormField label={isAr ? "رابط العلامة التجارية" : "Brand Link"}>
+                  <input value={form.brand_link} onChange={e => setForm(f => ({ ...f, brand_link: e.target.value }))}
+                    className={inputCls} dir="ltr" placeholder="https://" />
+                </FormField>
+              </div>
+
               <FormField label={t("campaigns.objective") || "Campaign Objective"}>
                 <textarea value={form.objective} onChange={e => setForm(f => ({ ...f, objective: e.target.value }))}
                   rows={2} className={cn(inputCls, "h-auto py-2 resize-none")}
@@ -332,18 +407,25 @@ export default function Campaigns() {
                 <label className="block text-xs font-medium text-muted-foreground mb-2">
                   {t("campaigns.platforms") || "Platforms"}
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {PLATFORMS.map(p => (
-                    <button key={p} type="button" onClick={() => togglePlatform(p)}
-                      className={cn(
-                        "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                        form.platforms.includes(p)
-                          ? "bg-primary text-white border-primary"
-                          : "border-border text-muted-foreground hover:border-primary hover:text-primary"
-                      )}>
-                      {p.charAt(0).toUpperCase() + p.slice(1)}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-3">
+                  {PLATFORMS.map(p => {
+                    const selected = form.platforms.includes(p);
+                    const colors = PLATFORM_COLORS[p] || { bg: "bg-gray-700", text: "text-white", ring: "ring-gray-500" };
+                    return (
+                      <button key={p} type="button" onClick={() => togglePlatform(p)}
+                        className={cn(
+                          "flex flex-col items-center gap-1.5 p-2.5 rounded-xl border-2 transition-all",
+                          selected
+                            ? `border-transparent ring-2 ${colors.ring} shadow-md scale-105`
+                            : "border-border hover:border-muted-foreground/40 opacity-60 hover:opacity-100"
+                        )}>
+                        <span className={cn("w-9 h-9 rounded-xl flex items-center justify-center", colors.bg, colors.text)}>
+                          <PlatformSVG platform={p} />
+                        </span>
+                        <span className="text-[10px] font-medium text-foreground capitalize">{p}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -364,6 +446,50 @@ export default function Campaigns() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" />
+                  {isAr ? "فريق الحملة (اختيار متعدد)" : "Campaign Team (multi-select)"}
+                </label>
+                <div className="border border-border rounded-xl divide-y divide-border overflow-hidden max-h-44 overflow-y-auto">
+                  {mockTeamMembers.map(m => {
+                    const selected = form.campaign_team.includes(m.id);
+                    return (
+                      <div key={m.id} onClick={() => toggleCampaignTeam(m.id)}
+                        className={cn("flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors",
+                          selected ? "bg-primary/5 border-s-2 border-primary" : "hover:bg-muted/30")}>
+                        <div className={cn("w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors",
+                          selected ? "bg-primary border-primary" : "border-border")}>
+                          {selected && <svg viewBox="0 0 12 12" className="w-3 h-3 text-white" fill="currentColor"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" fill="none"/></svg>}
+                        </div>
+                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-[10px] font-bold text-primary">{m.name.charAt(0)}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium leading-tight">{m.name}</p>
+                          <p className="text-[10px] text-muted-foreground">{m.role}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {form.campaign_team.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {form.campaign_team.map(id => {
+                      const m = mockTeamMembers.find(x => x.id === id);
+                      return m ? (
+                        <span key={id} className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                          {m.name}
+                          <button type="button" onClick={() => toggleCampaignTeam(id)} className="opacity-60 hover:opacity-100">
+                            <X className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                )}
               </div>
 
               <FormField label={t("common.notes")}>
