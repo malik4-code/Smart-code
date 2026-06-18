@@ -1,0 +1,387 @@
+Apply the following updates to the Marketing Company Management System.
+
+====================================
+
+1. CLIENTS MODULE UPDATES
+   ====================================
+
+When adding a new client, the system should not save the client immediately.
+
+Replace the "Save" button with a step-by-step form using "Next" button.
+
+Client creation steps:
+
+Step 1: Basic Information
+The user cannot move to the next step until required basic fields are completed.
+
+Required basic fields:
+
+* Brand Name
+* Contact Number
+* Legal Company Name
+* Commercial Registration Number
+
+Optional fields:
+
+* Brand Link
+* Email
+* Activity Type
+
+Button:
+
+* Next, not Save
+
+Final step:
+
+* Save Client
+
+====================================
+2. CLIENT ATTACHMENTS + BARCODE SCAN
+====================================
+
+In the attachments section, allow uploading:
+
+* Commercial Registration
+* VAT Certificate
+* National Address
+* Contract
+* Other Documents
+
+Add barcode / QR scan feature inside attachments.
+
+The user should be able to:
+
+* Upload file
+* Scan QR / barcode
+* Auto-fill available data from the scanned document
+
+====================================
+3. CAMPAIGN RESPONSIBLE TEAM
+============================
+
+Change "Campaign Responsible Employee" to "Campaign Team".
+
+It should allow selecting multiple employees, usually 2 or 3 employees.
+
+Field type:
+
+* Multi-select dropdown from employees
+
+Show selected employees as tags.
+
+====================================
+4. NATIONAL ADDRESS VALIDATION
+==============================
+
+National Address fields:
+
+* Country
+* City
+* District
+* Street Name
+* Building Number
+* Postal Code
+
+Validation:
+
+* Building Number must be exactly 4 digits
+* Postal Code must be exactly 5 digits
+
+Show clear error message if the number is incorrect.
+
+====================================
+5. CLIENT PROFILE CAMPAIGN HISTORY
+==================================
+
+Inside each client profile, add a clear Campaigns section.
+
+This section should show all campaigns related to this client:
+
+* Previous campaigns
+* Active campaigns
+* Upcoming campaigns
+* Completed campaigns
+
+For each campaign show:
+
+* Campaign Name
+* Status
+* Start Date
+* End Date
+* Campaign Leader
+* Campaign Team
+* Budget
+* Influencers used
+* Final Report
+* Attachments
+* Notes
+* Full timeline
+
+====================================
+6. INFLUENCERS MODULE UPDATES
+=============================
+
+Each influencer must support multiple platforms.
+
+Do not show only one platform.
+
+For each influencer, show all added platforms as icons/logos:
+
+* Snapchat
+* TikTok
+* Instagram
+* X
+* YouTube
+* Facebook
+* Other
+
+Each platform should have its own data:
+
+* Platform Name
+* Username
+* Profile Link
+* Followers
+* Average Views
+* Engagement Rate
+* Platform Cost Price
+* Platform Selling Price to Client
+* Notes
+
+====================================
+7. INFLUENCER FILTERS
+=====================
+
+Add advanced filters to help select influencers from a large database of 7,000+ influencers.
+
+Filters should include:
+
+* Platform
+* Gender
+* Category / Field
+* Country
+* City
+* Followers Range
+* Average Views Range
+* Engagement Rate Range
+* Cost Price Range
+* Selling Price Range
+* Shows Face: Yes / No
+* Has License: Yes / No
+* Campaign Rating
+* Availability Status
+* Blacklisted / Not Blacklisted
+* Favorite
+* Previously Worked With Client
+* Accounting Code
+* Tags
+
+Add search by:
+
+* Influencer Name
+* Username
+* Mobile Number
+* Accounting Code
+* License Number
+
+====================================
+8. ADD INFLUENCER FORM
+======================
+
+When adding an influencer, include these fields:
+
+Basic Information:
+
+* Influencer Name
+* Gender
+* Category / Field
+* Accounting Code
+* License
+* Contact Number
+* Personal Influencer Number
+* Shows Face: Yes / No
+* Notes
+
+Pricing:
+
+* Cost Price
+* Selling Price to Clients
+
+Important:
+Each platform should have its own cost price and selling price.
+
+Campaign Performance:
+
+* Automatic campaign rating
+* Rating should appear in influencer data
+* Rating is calculated based on campaign performance and team/client feedback
+
+Address for Shipping:
+
+* Country
+* City
+* District
+* Street Name
+* Building Number
+* Postal Code
+* Additional Details
+
+Media:
+
+* Upload Influencer Photo
+
+Banking Information:
+
+* Bank Name
+* Account Holder Name
+* IBAN
+* Bank Account Number
+* Payment Notes
+
+====================================
+9. TASKS MODULE UPDATES
+=======================
+
+When creating or requesting a campaign, add more detailed task data.
+
+Each task should include:
+
+* Task Name
+* Related Campaign
+* Related Client
+* Assigned To
+* Assigned By
+* Campaign Leader
+* Department
+* Priority
+* Due Date
+* Status
+* Notes
+* Attachments
+
+All timings should be automatic:
+
+Track automatically:
+
+* Task created time
+* Task assigned time
+* Task accepted time
+* Task started time
+* Task completed time
+* Task delayed time
+* Last update time
+
+No manual time entry unless admin edits it.
+
+====================================
+10. MANAGER GENERAL TASK VIEW
+=============================
+
+In the Department Manager task overview, show clearly:
+
+* Campaign Name
+* Client Name
+* Responsible Campaign Leader
+* Assigned Employees
+* Task Status
+* Due Date
+* Delay Status
+* Last Update
+
+The responsible person must appear next to each campaign name.
+
+====================================
+11. USERS & ROLE TESTING
+========================
+
+Clarify the user roles and hierarchy.
+
+Add a page called:
+Users & Role Preview
+
+Admin / Company Owner should be able to open multiple test users to check how the dashboard appears for each role.
+
+Add demo/test users for:
+
+* Company Owner
+* CEO
+* Department Manager
+* Campaign Leader
+* Team Member
+* Finance Manager
+* Client Portal User
+
+Add a feature:
+View As User / Login As Role
+
+Admin can select any role and preview the dashboard exactly as that user sees it.
+
+Important:
+
+* Admin should not need the user password
+* Show a banner: "You are viewing as [Role/User]"
+* Add button: Return to Admin View
+* Log this action in activity log
+
+====================================
+12. ROLE HIERARCHY
+==================
+
+Use this hierarchy:
+
+Company Owner
+→ CEO / Executive Director
+→ Department Manager
+→ Campaign Leader
+→ Team Members
+
+Finance Manager has access only to finance, invoices, VAT, client billing, and related reports.
+
+Client Portal User can only see shared proposals, reports, and approvals.
+
+====================================
+13. UI REQUIREMENTS
+===================
+
+Keep Arabic RTL support and English LTR support.
+
+Make forms clean and organized.
+
+Use steps/tabs for long forms.
+
+Do not show too many fields on one screen.
+
+Make sure all buttons work:
+
+* Add Client
+* Add Campaign
+* Add Influencer
+* Add Task
+* Upload Attachments
+* Barcode Scan
+* View As User
+
+====================================
+14. DATABASE REQUIREMENTS
+=========================
+
+Update or create tables for:
+
+* clients
+* client_addresses
+* client_attachments
+* campaigns
+* campaign_team_members
+* influencers
+* influencer_platforms
+* influencer_pricing
+* influencer_bank_accounts
+* influencer_addresses
+* tasks
+* task_time_logs
+* users
+* roles
+* permissions
+* user_hierarchy
+* activity_logs
+
+Make sure all client, campaign, influencer, and task data are connected properly.

@@ -187,7 +187,7 @@
     "confirmDelete": "هل أنت متأكد من حذف هذا المؤثر؟",
     "addSuccess": "تمت إضافة المؤثر بنجاح", "editSuccess": "تم تحديث المؤثر بنجاح",
     "deleteSuccess": "تم حذف المؤثر بنجاح",
-    "platforms": { "instagram": "إنستجرام", "youtube": "يوتيوب", "tiktok": "تيك توك", "twitter": "تويتر / إكس", "snapchat": "سناب شات", "linkedin": "لينكد إن", "facebook": "فيسبوك", "other": "أخرى" },
+    "platforms": { "instagram": "إنستجرام", "youtube": "يوتيوب", "tiktok": "تيك توك", "twitter": "تويتر / إكس", "x": "إكس (تويتر)", "snapchat": "سناب شات", "linkedin": "لينكد إن", "facebook": "فيسبوك", "other": "أخرى" },
     "categories": { "lifestyle": "أسلوب الحياة", "fashion": "أزياء وموضة", "food": "طعام وطبخ", "tech": "تقنية", "beauty": "جمال ومكياج", "fitness": "لياقة وصحة", "travel": "سفر", "business": "أعمال", "education": "تعليم", "entertainment": "ترفيه", "sports": "رياضة", "gaming": "ألعاب", "other": "أخرى" },
     "genders": { "male": "ذكر", "female": "أنثى" },
     "languages": { "arabic": "عربي", "english": "إنجليزي", "bilingual": "ثنائي اللغة" }
@@ -214,7 +214,11 @@
     "deleteSuccess": "تم حذف المهمة بنجاح", "selectProject": "اختر مشروعاً", "selectAssignee": "اختر المسؤول",
     "overdue": "متأخرة", "dueToday": "تستحق اليوم", "upcoming": "قادمة",
     "statuses": { "pending": "معلقة", "in_progress": "جارية", "completed": "مكتملة", "cancelled": "ملغاة" },
-    "priorities": { "low": "منخفضة", "medium": "متوسطة", "high": "عالية", "urgent": "عاجلة" }
+    "priorities": { "low": "منخفضة", "medium": "متوسطة", "high": "عالية", "urgent": "عاجلة" },
+    "departments": {
+      "marketing": "التسويق", "creative": "الإبداع", "finance": "المالية",
+      "operations": "العمليات", "management": "الإدارة", "influencer_relations": "علاقات المؤثرين"
+    }
   },
   "calendar": {
     "title": "التقويم", "subtitle": "عرض المهام ومواعيد المشاريع",

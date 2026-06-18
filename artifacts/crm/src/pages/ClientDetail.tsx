@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRoute, Link } from "wouter";
 import {
-  ArrowLeft, Building2, Phone, Mail, Globe, MapPin, FileText,
+  ArrowLeft, Phone, Mail, Globe, MapPin, FileText,
   CheckCircle2, XCircle, User, Clock, ExternalLink,
   Megaphone, ChevronRight, Paperclip, Calendar, Bell,
-  AlertTriangle, ShieldAlert, TrendingUp, StickyNote, Receipt, Plus
+  ShieldAlert, Receipt, Plus, Users, DollarSign, TrendingUp,
+  BarChart2, Star, Award, StickyNote
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -52,7 +53,13 @@ export default function ClientDetail() {
   const [notes, setNotes] = useState<string[]>([]);
 
   const client = mockEnterpriseClients.find(c => c.id === params?.id);
-  const relatedCampaigns = mockCampaigns.filter(c => c.client_id === client?.id || c.client_name === client?.brand_name);
+  const relatedCampaigns = mockCampaigns.filter(c => {
+    if (!client) return false;
+    if (c.client_id === client.id) return true;
+    const brandLower = client.brand_name.toLowerCase();
+    const camNameLower = c.client_name.toLowerCase();
+    return camNameLower.includes(brandLower) || brandLower.includes(camNameLower);
+  });
   const cs = getContractStatus(client?.contract_end_date ?? null);
 
   const clientContracts = mockDocuments.filter(d => d.folder === "contracts" && d.client_name === client?.brand_name);
@@ -289,38 +296,190 @@ export default function ClientDetail() {
               )}
 
               {activeTab === "campaigns" && (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {relatedCampaigns.length === 0 ? (
                     <div className="py-12 text-center text-muted-foreground text-sm">
                       <Megaphone className="w-8 h-8 mx-auto mb-2 opacity-30" />
                       {t("campaigns.noCampaigns")}
                     </div>
                   ) : relatedCampaigns.map(c => {
-                    const pct = Math.round((STAGE_ORDER.indexOf(c.current_stage) + 1) / 15 * 100);
+                    const stageIdx = STAGE_ORDER.indexOf(c.current_stage);
+                    const pct = Math.round((stageIdx + 1) / 15 * 100);
+                    const remaining = c.budget - c.spent;
+                    const budgetPct = c.budget > 0 ? Math.round((c.spent / c.budget) * 100) : 0;
+                    const publishedInfluencers = c.influencers.filter(i => i.status === "published" || i.status === "content_done");
+                    const contractedCount = c.influencers.filter(i => i.status === "contracted" || i.status === "content_done" || i.status === "published").length;
+                    const isCompleted = c.status === "completed";
                     return (
-                      <Link key={c.id} href={`/campaigns/${c.id}`}
-                        className="block p-4 rounded-xl border border-border hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                        <div className="flex items-start justify-between gap-3 mb-2">
-                          <div className="min-w-0">
-                            <p className="font-semibold text-sm group-hover:text-primary transition-colors truncate">{c.name}</p>
-                            <p className="text-xs text-muted-foreground">{c.account_manager} · {c.start_date} → {c.end_date}</p>
+                      <div key={c.id} className="border border-border rounded-xl overflow-hidden shadow-sm">
+                        {/* Campaign Header */}
+                        <div className={cn("px-5 py-4 flex items-start justify-between gap-3",
+                          isCompleted ? "bg-emerald-50/60 dark:bg-emerald-950/20" : "bg-muted/20"
+                        )}>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {isCompleted && <Award className="w-4 h-4 text-emerald-600 flex-shrink-0" />}
+                              <h4 className="font-bold text-sm">{c.name}</h4>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {c.start_date} → {c.end_date}
+                            </p>
                           </div>
-                          <div className="flex items-center gap-1.5 flex-shrink-0">
-                            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
-                              c.status === "active" ? "bg-green-100 text-green-700" :
-                              c.status === "completed" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600"
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-semibold",
+                              c.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300" :
+                              c.status === "completed" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300" :
+                              c.status === "paused" ? "bg-amber-100 text-amber-700" :
+                              "bg-gray-100 text-gray-600"
                             )}>{t(`campaigns.statuses.${c.status}`)}</span>
-                            <ChevronRight className="w-4 h-4 text-muted-foreground rtl:rotate-180" />
+                            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
+                              c.priority === "urgent" ? "bg-red-100 text-red-700" :
+                              c.priority === "high" ? "bg-orange-100 text-orange-700" :
+                              c.priority === "medium" ? "bg-amber-100 text-amber-700" :
+                              "bg-gray-100 text-gray-600"
+                            )}>{t(`campaigns.priorities.${c.priority}`)}</span>
+                            <Link href={`/campaigns/${c.id}`}
+                              className="flex items-center gap-1 text-xs text-primary hover:underline">
+                              {isAr ? "فتح" : "Open"} <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                            </Link>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
+
+                        <div className="p-5 space-y-4">
+                          {/* Team */}
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+                                <User className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">{t("campaigns.accountManager")}</p>
+                                <p className="text-sm font-medium leading-tight">{c.account_manager}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-7 h-7 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
+                                <Star className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">{t("campaigns.teamLeader")}</p>
+                                <p className="text-sm font-medium leading-tight">{c.team_leader}</p>
+                              </div>
+                            </div>
                           </div>
-                          <span className="text-xs text-muted-foreground flex-shrink-0">{pct}%</span>
+
+                          {/* Budget */}
+                          <div className="bg-muted/30 rounded-xl p-3.5 space-y-2">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="flex items-center gap-1 font-medium text-muted-foreground">
+                                <DollarSign className="w-3.5 h-3.5" />
+                                {isAr ? "الميزانية" : "Budget"}
+                              </span>
+                              <span className="font-semibold">{c.budget.toLocaleString()} {t("common.sar")}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                                <div className={cn("h-full rounded-full transition-all",
+                                  budgetPct >= 100 ? "bg-red-500" :
+                                  budgetPct >= 80 ? "bg-amber-500" : "bg-primary"
+                                )} style={{ width: `${Math.min(budgetPct, 100)}%` }} />
+                              </div>
+                              <span className={cn("text-xs font-semibold flex-shrink-0",
+                                budgetPct >= 100 ? "text-red-600" : budgetPct >= 80 ? "text-amber-600" : "text-primary"
+                              )}>{budgetPct}%</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <div>
+                                <span className="text-muted-foreground">{isAr ? "المصروف: " : "Spent: "}</span>
+                                <span className="font-medium">{c.spent.toLocaleString()} {t("common.sar")}</span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">{isAr ? "المتبقي: " : "Remaining: "}</span>
+                                <span className={cn("font-medium", remaining < 0 ? "text-red-600" : "text-emerald-600")}>
+                                  {remaining.toLocaleString()} {t("common.sar")}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Stage Progress */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                                <BarChart2 className="w-3.5 h-3.5" />
+                                {isAr ? "مرحلة سير العمل" : "Workflow Stage"}
+                              </span>
+                              <span className="text-xs font-semibold text-primary">{pct}% {isAr ? "مكتمل" : "complete"}</span>
+                            </div>
+                            <div className="flex gap-1 mb-1.5">
+                              {STAGE_ORDER.map((s, i) => (
+                                <div key={s} title={t(`campaigns.stages.${s}`)}
+                                  className={cn("h-1.5 flex-1 rounded-full",
+                                    i < stageIdx ? "bg-primary" :
+                                    i === stageIdx ? "bg-primary/60" : "bg-muted"
+                                  )} />
+                              ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground">{t(`campaigns.stages.${c.current_stage}`)}</p>
+                          </div>
+
+                          {/* Influencers used */}
+                          {c.influencers.length > 0 && (
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                                  <Users className="w-3.5 h-3.5" />
+                                  {t("campaigns.influencers")}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {contractedCount}/{c.influencers.length} {isAr ? "متعاقد" : "contracted"}
+                                </span>
+                              </div>
+                              <div className="space-y-1.5">
+                                {c.influencers.map(inf => (
+                                  <div key={inf.id} className="flex items-center justify-between text-xs px-3 py-2 bg-muted/30 rounded-lg">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <span className="text-[10px] font-bold text-primary">{inf.name.charAt(0)}</span>
+                                      </div>
+                                      <span className="font-medium truncate">{inf.name}</span>
+                                      <span className="text-muted-foreground capitalize shrink-0">{inf.platform}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                      <span className="text-muted-foreground">{inf.client_price.toLocaleString()} {t("common.sar")}</span>
+                                      <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-medium",
+                                        inf.status === "published" ? "bg-emerald-100 text-emerald-700" :
+                                        inf.status === "content_done" ? "bg-blue-100 text-blue-700" :
+                                        inf.status === "contracted" ? "bg-purple-100 text-purple-700" :
+                                        inf.status === "client_approved" ? "bg-green-100 text-green-700" :
+                                        inf.status === "client_rejected" ? "bg-red-100 text-red-700" :
+                                        "bg-gray-100 text-gray-600"
+                                      )}>{t(`campaigns.influencerStatuses.${inf.status}`)}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Description / notes */}
+                          {c.description && (
+                            <div className="text-xs text-muted-foreground bg-muted/20 rounded-lg px-3 py-2.5 leading-relaxed">
+                              {c.description}
+                            </div>
+                          )}
+
+                          {/* Final report badge if completed */}
+                          {isCompleted && (
+                            <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg text-xs text-emerald-700 dark:text-emerald-400">
+                              <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span className="font-medium">
+                                {isAr ? "الحملة مكتملة — التقرير النهائي جاهز" : "Campaign completed — final report available"}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        <p className="text-xs text-muted-foreground">{t(`campaigns.stages.${c.current_stage}`)}</p>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>

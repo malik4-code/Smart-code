@@ -187,7 +187,7 @@
     "confirmDelete": "Are you sure you want to delete this influencer?",
     "addSuccess": "Influencer added successfully", "editSuccess": "Influencer updated successfully",
     "deleteSuccess": "Influencer deleted successfully",
-    "platforms": { "instagram": "Instagram", "youtube": "YouTube", "tiktok": "TikTok", "twitter": "Twitter / X", "snapchat": "Snapchat", "linkedin": "LinkedIn", "facebook": "Facebook", "other": "Other" },
+    "platforms": { "instagram": "Instagram", "youtube": "YouTube", "tiktok": "TikTok", "twitter": "Twitter / X", "x": "X (Twitter)", "snapchat": "Snapchat", "linkedin": "LinkedIn", "facebook": "Facebook", "other": "Other" },
     "categories": { "lifestyle": "Lifestyle", "fashion": "Fashion", "food": "Food", "tech": "Technology", "beauty": "Beauty", "fitness": "Fitness", "travel": "Travel", "business": "Business", "education": "Education", "entertainment": "Entertainment", "sports": "Sports", "gaming": "Gaming", "other": "Other" },
     "genders": { "male": "Male", "female": "Female" },
     "languages": { "arabic": "Arabic", "english": "English", "bilingual": "Bilingual" }
@@ -215,7 +215,11 @@
     "deleteSuccess": "Task deleted successfully", "selectProject": "Select a project",
     "selectAssignee": "Select assignee", "overdue": "Overdue", "dueToday": "Due Today", "upcoming": "Upcoming",
     "statuses": { "pending": "Pending", "in_progress": "In Progress", "completed": "Completed", "cancelled": "Cancelled" },
-    "priorities": { "low": "Low", "medium": "Medium", "high": "High", "urgent": "Urgent" }
+    "priorities": { "low": "Low", "medium": "Medium", "high": "High", "urgent": "Urgent" },
+    "departments": {
+      "marketing": "Marketing", "creative": "Creative", "finance": "Finance",
+      "operations": "Operations", "management": "Management", "influencer_relations": "Influencer Relations"
+    }
   },
   "calendar": {
     "title": "Calendar", "subtitle": "View tasks and project deadlines",
